@@ -86,6 +86,32 @@ export async function updateMediaMeta(
   return { success: true }
 }
 
+export interface EditorImageUploadResult {
+  id: string
+  url: string
+  altText: string | null
+}
+
+// Direct-call action (not the (prevState, formData) shape) for inserting an
+// image from the article editor toolbar, rather than through the media
+// library's upload form.
+export async function uploadEditorImage(formData: FormData): Promise<EditorImageUploadResult> {
+  const user = await requireRole(UserRole.AUTHOR)
+
+  const file = formData.get('file')
+  if (!(file instanceof File) || file.size === 0) {
+    throw new Error('No file provided.')
+  }
+
+  const uploaded = await uploadImageToBlob(file)
+  const media = await db.media.create({
+    data: { ...uploaded, uploadedByUserId: user.id },
+  })
+
+  revalidatePath('/admin/media')
+  return { id: media.id, url: media.url, altText: media.altText }
+}
+
 export async function deleteMedia(mediaId: string): Promise<void> {
   await requireRole(UserRole.EDITOR)
 

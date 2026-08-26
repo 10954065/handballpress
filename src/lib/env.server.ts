@@ -8,6 +8,7 @@ const serverEnvSchema = z.object({
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().optional(),
   WORDPRESS_SITE_URL: z.string().url().optional(),
+  CRON_SECRET: z.string().min(16).optional(),
 })
 
 function parseServerEnv() {

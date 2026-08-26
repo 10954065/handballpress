@@ -41,6 +41,14 @@ export function deleteTestAuthorsByPrefix(prefix: string): Promise<void> {
   })
 }
 
+export function deleteTestArticlesByPrefix(prefix: string): Promise<void> {
+  return withClient(async (client) => {
+    // Cascades to ArticleTag/ArticleMedia/ArticleRevision/etc. via the
+    // schema's onDelete: Cascade foreign keys.
+    await client.query('DELETE FROM "Article" WHERE title LIKE $1', [`${prefix}%`])
+  })
+}
+
 export async function deleteMediaByAltText(altText: string): Promise<void> {
   const { del } = await import('@vercel/blob')
   await withClient(async (client) => {
