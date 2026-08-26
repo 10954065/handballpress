@@ -10,6 +10,7 @@ export default defineConfig({
   schema: 'prisma/schema.prisma',
   migrations: {
     path: 'prisma/migrations',
+    seed: 'npx tsx prisma/seed.ts',
   },
   datasource: {
     // Neon's pooled DATABASE_URL (pgbouncer) doesn't support the advisory

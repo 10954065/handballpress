@@ -36,8 +36,10 @@ model User {
   @@index([role])
 }
 
+// id is the hex-encoded SHA-256 hash of the session token — the raw token
+// only ever lives in the client's cookie, never in the database.
 model Session {
-  id        String   @id @default(cuid())
+  id        String   @id
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
