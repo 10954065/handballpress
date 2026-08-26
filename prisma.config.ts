@@ -12,6 +12,9 @@ export default defineConfig({
     path: 'prisma/migrations',
   },
   datasource: {
-    url: env('DATABASE_URL'),
+    // Neon's pooled DATABASE_URL (pgbouncer) doesn't support the advisory
+    // locks Migrate needs — the CLI must use the direct/unpooled connection.
+    // The app runtime (src/lib/db.ts) still uses the pooled DATABASE_URL.
+    url: env('DATABASE_URL_UNPOOLED'),
   },
 })
