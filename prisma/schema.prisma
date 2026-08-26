@@ -1,0 +1,463 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------- Auth & RBAC ----------
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  AUTHOR
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  role         UserRole  @default(AUTHOR)
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  authorProfile    AuthorProfile?
+  sessions         Session[]
+  auditLogs        AuditLog[]
+  articleRevisions ArticleRevision[]
+  uploadedMedia    Media[]
+
+  @@index([role])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ---------- Authors (public byline, independent of login access) ----------
+
+model AuthorProfile {
+  id      String  @id @default(cuid())
+  userId  String? @unique
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name    String
+  slug    String  @unique
+  bio     String?
+  email   String?
+  photoId String?
+  photo   Media?  @relation(fields: [photoId], references: [id], onDelete: SetNull)
+
+  wordpressAuthorId String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  articles    Article[]
+  socialLinks AuthorSocialLink[]
+
+  @@index([slug])
+}
+
+enum SocialPlatform {
+  FACEBOOK
+  INSTAGRAM
+  X
+  YOUTUBE
+  TIKTOK
+  WHATSAPP
+}
+
+model AuthorSocialLink {
+  id       String         @id @default(cuid())
+  authorId String
+  author   AuthorProfile  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  platform SocialPlatform
+  url      String
+
+  @@unique([authorId, platform])
+}
+
+// Site-wide social links, editable from Settings (distinct from an author's personal links).
+model SocialLink {
+  id       String         @id @default(cuid())
+  platform SocialPlatform @unique
+  url      String
+  isActive Boolean        @default(true)
+  order    Int            @default(0)
+}
+
+// ---------- Taxonomy ----------
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  description String?
+
+  wordpressCategoryId String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  articles Article[]
+
+  @@index([slug])
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  wordpressTagId String? @unique
+
+  createdAt DateTime @default(now())
+
+  articles ArticleTag[]
+
+  @@index([slug])
+}
+
+model ArticleTag {
+  articleId String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tagId     String
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+  @@index([tagId])
+}
+
+// ---------- Articles ----------
+
+enum ArticleStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+}
+
+model Article {
+  id      String  @id @default(cuid())
+  title   String
+  slug    String  @unique
+  excerpt String?
+
+  // contentJson is the canonical TipTap/ProseMirror document; contentHtml is a
+  // sanitized render cache kept in sync on save so read paths never re-sanitize.
+  contentJson Json
+  contentHtml String
+
+  status       ArticleStatus @default(DRAFT)
+  publishedAt  DateTime?
+  scheduledFor DateTime?
+  updatedAt    DateTime      @updatedAt
+  createdAt    DateTime      @default(now())
+
+  authorId String
+  author   AuthorProfile @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  featuredImageId String?
+  featuredImage   Media?  @relation("ArticleFeaturedImage", fields: [featuredImageId], references: [id], onDelete: SetNull)
+
+  seoTitle           String?
+  seoDescription     String?
+  canonicalUrl       String?
+  ogImageId          String?
+  ogImage            Media?  @relation("ArticleOgImage", fields: [ogImageId], references: [id], onDelete: SetNull)
+  readingTimeMinutes Int?
+
+  viewCount Int @default(0)
+
+  wordpressPostId String? @unique
+  sourceUrl       String?
+
+  createdByUserId String?
+
+  tags               ArticleTag[]
+  media              ArticleMedia[]
+  revisions          ArticleRevision[]
+  comments           Comment[]
+  matchReport        MatchReport?
+  homepagePlacements HomepagePlacement[]
+
+  @@index([status, publishedAt])
+  @@index([categoryId, status, publishedAt])
+  @@index([authorId])
+  @@index([slug])
+}
+
+model ArticleRevision {
+  id              String   @id @default(cuid())
+  articleId       String
+  article         Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  editorUserId    String?
+  editor          User?    @relation(fields: [editorUserId], references: [id], onDelete: SetNull)
+  titleSnapshot   String
+  contentSnapshot Json
+  changeSummary   String?
+  createdAt       DateTime @default(now())
+
+  @@index([articleId, createdAt])
+}
+
+// Optional structured scoreline attached to a match-report article.
+model MatchReport {
+  id          String    @id @default(cuid())
+  articleId   String    @unique
+  article     Article   @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  competition String?
+  teamAName   String
+  teamAScore  Int?
+  teamBName   String
+  teamBScore  Int?
+  venue       String?
+  matchDate   DateTime?
+}
+
+enum HomepageSlot {
+  HERO
+  SECONDARY
+  TRENDING
+  SECTION_GHANA
+  SECTION_INTERNATIONAL
+  SECTION_MATCH_REPORTS
+  SECTION_INTERVIEWS
+  SECTION_OPINION
+}
+
+// Editor-curated homepage placements. Empty for a slot = fall back to
+// latest-by-category/publishedAt query logic at render time.
+model HomepagePlacement {
+  id        String       @id @default(cuid())
+  slot      HomepageSlot
+  articleId String
+  article   Article      @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  position  Int          @default(0)
+  createdAt DateTime     @default(now())
+
+  @@unique([slot, position])
+  @@index([slot])
+}
+
+// ---------- Media ----------
+
+enum MediaProvider {
+  VERCEL_BLOB
+  CLOUDINARY
+  R2
+  SUPABASE
+}
+
+model Media {
+  id            String        @id @default(cuid())
+  provider      MediaProvider
+  url           String
+  storageKey    String
+  mimeType      String
+  width         Int?
+  height        Int?
+  fileSizeBytes Int?
+  altText       String?
+  caption       String?
+  credit        String?
+
+  uploadedByUserId String?
+  uploadedBy       User?   @relation(fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+
+  wordpressAttachmentId String? @unique
+
+  createdAt DateTime @default(now())
+
+  articleFeaturedFor Article[]       @relation("ArticleFeaturedImage")
+  articleOgFor       Article[]       @relation("ArticleOgImage")
+  authorPhotoFor     AuthorProfile[]
+  articleMedia       ArticleMedia[]
+
+  @@index([mimeType])
+}
+
+enum ArticleMediaRole {
+  FEATURED
+  OG
+  INLINE
+}
+
+model ArticleMedia {
+  id        String           @id @default(cuid())
+  articleId String
+  article   Article          @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  mediaId   String
+  media     Media            @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  role      ArticleMediaRole
+  position  Int              @default(0)
+
+  @@index([articleId])
+  @@index([mediaId])
+}
+
+// ---------- Comments ----------
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  HIDDEN
+  SPAM
+}
+
+model Comment {
+  id          String        @id @default(cuid())
+  articleId   String
+  article     Article       @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  parentId    String?
+  parent      Comment?      @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies     Comment[]     @relation("CommentReplies")
+  authorName  String
+  authorEmail String
+  content     String
+  status      CommentStatus @default(PENDING)
+
+  wordpressCommentId String? @unique
+
+  createdAt DateTime @default(now())
+
+  @@index([articleId, status])
+}
+
+// ---------- Newsletter ----------
+
+enum SubscriberStatus {
+  SUBSCRIBED
+  UNSUBSCRIBED
+}
+
+model NewsletterSubscriber {
+  id             String           @id @default(cuid())
+  email          String           @unique
+  status         SubscriberStatus @default(SUBSCRIBED)
+  source         String?
+  subscribedAt   DateTime         @default(now())
+  unsubscribedAt DateTime?
+}
+
+// ---------- Advertising ----------
+
+enum AdPlacement {
+  HEADER
+  HOMEPAGE_HERO
+  ARTICLE_TOP
+  ARTICLE_MIDDLE
+  ARTICLE_BOTTOM
+  SIDEBAR
+  FOOTER
+}
+
+model Advertisement {
+  id          String      @id @default(cuid())
+  name        String
+  placement   AdPlacement
+  imageUrl    String?
+  linkUrl     String?
+  embedHtml   String?
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean     @default(true)
+  impressions Int         @default(0)
+  clicks      Int         @default(0)
+  createdAt   DateTime    @default(now())
+
+  @@index([placement, isActive, startDate, endDate])
+}
+
+// ---------- Breaking news ----------
+
+model BreakingNewsItem {
+  id        String    @id @default(cuid())
+  headline  String
+  linkUrl   String?
+  isActive  Boolean   @default(false)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+// ---------- SEO / redirects / settings ----------
+
+model Redirect {
+  id         String   @id @default(cuid())
+  oldUrl     String   @unique
+  newUrl     String
+  statusCode Int      @default(301)
+  createdAt  DateTime @default(now())
+
+  @@index([oldUrl])
+}
+
+model SiteSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+// ---------- Audit & migration ----------
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action     String
+  entityType String
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId, createdAt])
+}
+
+enum MigrationEntityType {
+  ARTICLE
+  AUTHOR
+  CATEGORY
+  TAG
+  COMMENT
+  MEDIA
+}
+
+enum MigrationStatus {
+  SUCCESS
+  FAILED
+  SKIPPED
+}
+
+model MigrationRecord {
+  id              String              @id @default(cuid())
+  wordpressPostId String
+  entityType      MigrationEntityType
+  sourceUrl       String?
+  localEntityId   String?
+  status          MigrationStatus
+  errorMessage    String?
+  migratedAt      DateTime            @default(now())
+
+  @@unique([wordpressPostId, entityType])
+  @@index([status])
+}
