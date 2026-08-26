@@ -82,7 +82,12 @@ export async function setSessionCookie(token: string, expiresAt: Date): Promise<
   const cookieStore = await cookies()
   cookieStore.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    // Keyed off actually running on Vercel (always HTTPS there), not
+    // NODE_ENV — `next start` in production mode still serves plain HTTP
+    // locally, and WebKit (unlike Chromium) refuses to store a Secure
+    // cookie over HTTP even on localhost, silently breaking every
+    // subsequent authenticated request.
+    secure: process.env.VERCEL === '1',
     sameSite: 'lax',
     expires: expiresAt,
     path: '/',

@@ -1,6 +1,15 @@
 import Link from 'next/link'
 import { requireUser } from '@/lib/auth/rbac'
 
+const NAV_LINKS = [
+  { href: '/admin', label: 'Dashboard' },
+  { href: '/admin/articles', label: 'Articles' },
+  { href: '/admin/media', label: 'Media' },
+  { href: '/admin/categories', label: 'Categories' },
+  { href: '/admin/tags', label: 'Tags' },
+  { href: '/admin/authors', label: 'Authors' },
+]
+
 export default async function AdminLayout({ children }: LayoutProps<'/admin'>) {
   const user = await requireUser()
 
@@ -10,6 +19,13 @@ export default async function AdminLayout({ children }: LayoutProps<'/admin'>) {
         <Link href="/admin" className="text-sm font-bold tracking-tight">
           Hand Ball Press GH — Admin
         </Link>
+        <nav className="flex items-center gap-4 text-sm">
+          {NAV_LINKS.map((link) => (
+            <Link key={link.href} href={link.href} className="hover:underline">
+              {link.label}
+            </Link>
+          ))}
+        </nav>
         <div className="flex items-center gap-4 text-sm text-neutral-600 dark:text-neutral-400">
           <span>
             {user.name} · {user.role}

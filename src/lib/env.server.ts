@@ -4,7 +4,7 @@ import { z } from 'zod'
 const serverEnvSchema = z.object({
   DATABASE_URL: z.string().min(1),
   SESSION_SECRET: z.string().min(32),
-  BLOB_READ_WRITE_TOKEN: z.string().optional(),
+  BLOB_READ_WRITE_TOKEN: z.string().min(1),
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().optional(),
   WORDPRESS_SITE_URL: z.string().url().optional(),
