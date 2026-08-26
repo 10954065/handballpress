@@ -1,0 +1,155 @@
+import Link from 'next/link'
+import Image from 'next/image'
+import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
+import { db } from '@/lib/db'
+import { getCurrentUser, hasRole } from '@/lib/auth/rbac'
+import { UserRole, ArticleStatus } from '@/generated/prisma/enums'
+import { publishDueScheduledArticles } from '@/lib/articles/scheduling'
+import { getRelatedArticles } from '@/lib/public/queries'
+import { formatDate } from '@/lib/format'
+import { Byline } from '@/components/public/Byline'
+import { ArticleCard } from '@/components/public/ArticleCard'
+import { SectionHeading } from '@/components/public/SectionHeading'
+import { MatchScoreboard } from '@/components/public/MatchScoreboard'
+import './article-body.css'
+
+const articleInclude = {
+  author: { select: { name: true, slug: true } },
+  category: { select: { name: true, slug: true } },
+  featuredImage: true,
+  matchReport: true,
+} as const
+
+export async function generateMetadata({ params }: PageProps<'/news/[slug]'>): Promise<Metadata> {
+  const { slug } = await params
+  const article = await db.article.findUnique({ where: { slug } })
+  if (!article) return {}
+  return {
+    title: article.seoTitle || article.title,
+    description: article.seoDescription || article.excerpt || undefined,
+  }
+}
+
+export default async function ArticlePage({ params }: PageProps<'/news/[slug]'>) {
+  const { slug } = await params
+  let article = await db.article.findUnique({ where: { slug }, include: articleInclude })
+
+  if (!article) notFound()
+
+  // Targeted lazy publish: only sweep due SCHEDULED articles when the page
+  // actually being viewed needs it, not on every request. See
+  // src/lib/articles/scheduling.ts for why this exists alongside the cron.
+  if (
+    article.status === ArticleStatus.SCHEDULED &&
+    article.scheduledFor &&
+    article.scheduledFor <= new Date()
+  ) {
+    await publishDueScheduledArticles()
+    article = await db.article.findUnique({ where: { slug }, include: articleInclude })
+    if (!article) notFound()
+  }
+
+  // Unpublished articles are only viewable by signed-in CMS staff (acts as
+  // the "preview" mechanism) — never exposed to anonymous visitors.
+  if (article.status !== 'PUBLISHED') {
+    const user = await getCurrentUser()
+    if (!user || !hasRole(user.role, UserRole.AUTHOR)) notFound()
+  }
+
+  const relatedArticles = await getRelatedArticles(article.categoryId, article.id)
+
+  return (
+    <article className="pb-16">
+      <header className="mx-auto max-w-3xl px-4 pt-10 pb-6 sm:px-6">
+        {article.status !== 'PUBLISHED' && (
+          <p className="mb-6 rounded bg-yellow-100 px-3 py-2 text-sm text-yellow-900">
+            Preview — this article is not published ({article.status}).
+          </p>
+        )}
+        <Link
+          href={`/category/${article.category.slug}`}
+          className="text-crimson text-xs font-bold tracking-[0.16em] uppercase hover:underline"
+        >
+          {article.category.name}
+        </Link>
+        <h1 className="mt-2 font-serif text-3xl leading-[1.08] font-semibold text-balance sm:text-4xl lg:text-5xl">
+          {article.title}
+        </h1>
+        {article.excerpt && (
+          <p className="text-ink-soft mt-4 text-xl leading-relaxed text-pretty">
+            {article.excerpt}
+          </p>
+        )}
+        <Byline
+          author={article.author}
+          publishedAt={article.publishedAt}
+          readingTimeMinutes={article.readingTimeMinutes}
+          className="mt-6"
+        />
+      </header>
+
+      {article.featuredImage && (
+        <div className="mx-auto max-w-5xl px-4 sm:px-6">
+          <Image
+            src={article.featuredImage.url}
+            alt={article.featuredImage.altText ?? ''}
+            width={article.featuredImage.width ?? 1600}
+            height={article.featuredImage.height ?? 900}
+            priority
+            className="h-auto w-full rounded-sm"
+          />
+          {(article.featuredImage.caption || article.featuredImage.credit) && (
+            <p className="text-muted mt-2 text-sm">
+              {article.featuredImage.caption}
+              {article.featuredImage.credit && (
+                <span className="ml-2 text-xs tracking-wide uppercase">
+                  {article.featuredImage.credit}
+                </span>
+              )}
+            </p>
+          )}
+        </div>
+      )}
+
+      <div className="mx-auto max-w-3xl px-4 sm:px-6">
+        {article.matchReport && (
+          <MatchScoreboard
+            competition={article.matchReport.competition}
+            teamAName={article.matchReport.teamAName}
+            teamAScore={article.matchReport.teamAScore}
+            teamBName={article.matchReport.teamBName}
+            teamBScore={article.matchReport.teamBScore}
+            venue={article.matchReport.venue}
+            matchDate={article.matchReport.matchDate}
+          />
+        )}
+
+        {/* contentHtml is sanitized at write time in articleJsonToSanitizedHtml
+            (src/lib/articles/content.ts) against an allowlist matching the
+            editor's schema exactly — never raw/unsanitized input. */}
+        <div
+          className="article-body mt-4"
+          dangerouslySetInnerHTML={{ __html: article.contentHtml }}
+        />
+
+        {article.updatedAt && article.publishedAt && article.updatedAt > article.publishedAt && (
+          <p className="text-muted border-line mt-8 border-t pt-4 text-xs">
+            Last updated {formatDate(article.updatedAt)}
+          </p>
+        )}
+      </div>
+
+      {relatedArticles.length > 0 && (
+        <div className="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
+          <SectionHeading title="More from this section" eyebrow={article.category.name} />
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3">
+            {relatedArticles.map((related) => (
+              <ArticleCard key={related.id} article={related} variant="secondary" />
+            ))}
+          </div>
+        </div>
+      )}
+    </article>
+  )
+}

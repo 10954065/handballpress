@@ -1,8 +1,43 @@
 @import 'tailwindcss';
 
+/*
+ * Editorial identity for the public site: warm paper background, near-black
+ * ink, a crimson "urgency" accent for sport, and a gold accent nodding to
+ * Ghana without being a literal flag palette. Admin UI keeps the plain
+ * neutral scale (see admin layout) — these tokens are for the public site.
+ */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --color-ink: #17130f;
+  --color-ink-soft: #3a322a;
+  --color-muted: #6b5f52;
+  --color-paper: #faf6ee;
+  --color-paper-raised: #ffffff;
+  --color-line: rgba(23, 19, 15, 0.13);
+  --color-crimson: #c4122f;
+  --color-crimson-dark: #8f0d22;
+  --color-gold: #c98e17;
+  --color-forest: #14532d;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+
+    --color-ink: #f5f1e9;
+    --color-ink-soft: #d9d0c3;
+    --color-muted: #b3a696;
+    --color-paper: #120e0b;
+    --color-paper-raised: #1c1611;
+    --color-line: rgba(245, 241, 233, 0.14);
+    --color-crimson: #ff5164;
+    --color-crimson-dark: #ff8291;
+    --color-gold: #eab04a;
+    --color-forest: #34d399;
+  }
 }
 
 @theme inline {
@@ -10,13 +45,18 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
+  --font-serif: var(--font-fraunces);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-muted: var(--color-muted);
+  --color-paper: var(--color-paper);
+  --color-paper-raised: var(--color-paper-raised);
+  --color-line: var(--color-line);
+  --color-crimson: var(--color-crimson);
+  --color-crimson-dark: var(--color-crimson-dark);
+  --color-gold: var(--color-gold);
+  --color-forest: var(--color-forest);
 }
 
 body {
