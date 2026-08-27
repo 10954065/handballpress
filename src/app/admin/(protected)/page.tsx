@@ -6,6 +6,7 @@ import { ArticleStatus, SubscriberStatus } from '@/generated/prisma/enums'
 import { formatDate } from '@/lib/format'
 import { StatusBadge } from './articles/StatusBadge'
 import { ArticleIcon, CategoryIcon, NewsletterIcon } from '@/components/admin/icons'
+import { EmptyState } from '@/components/admin/EmptyState'
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -31,37 +32,72 @@ export default async function AdminDashboardPage() {
     statusCounts.find((row) => row.status === status)?._count._all ?? 0
 
   const stats = [
-    { label: 'Published', value: countFor(ArticleStatus.PUBLISHED), Icon: ArticleIcon },
-    { label: 'Drafts', value: countFor(ArticleStatus.DRAFT), Icon: ArticleIcon },
-    { label: 'Scheduled', value: countFor(ArticleStatus.SCHEDULED), Icon: ArticleIcon },
+    {
+      label: 'Published',
+      value: countFor(ArticleStatus.PUBLISHED),
+      Icon: ArticleIcon,
+      accent: 'bg-success/10 text-success',
+    },
+    {
+      label: 'Drafts',
+      value: countFor(ArticleStatus.DRAFT),
+      Icon: ArticleIcon,
+      accent: 'bg-gold-tint text-gold-dark',
+    },
+    {
+      label: 'Scheduled',
+      value: countFor(ArticleStatus.SCHEDULED),
+      Icon: ArticleIcon,
+      accent: 'bg-blue-tint text-blue',
+    },
     {
       label: 'Total views',
       value: viewAggregate._sum.viewCount ?? 0,
       Icon: ArticleIcon,
+      accent: 'bg-navy-tint text-navy',
     },
-    { label: 'Categories', value: categoryCount, Icon: CategoryIcon },
-    { label: 'Newsletter subscribers', value: activeSubscriberCount, Icon: NewsletterIcon },
+    {
+      label: 'Categories',
+      value: categoryCount,
+      Icon: CategoryIcon,
+      accent: 'bg-gold-tint text-gold-dark',
+    },
+    {
+      label: 'Newsletter subscribers',
+      value: activeSubscriberCount,
+      Icon: NewsletterIcon,
+      accent: 'bg-blue-tint text-blue',
+    },
   ]
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">Dashboard</p>
-          <h1 className="text-ink mt-1 font-serif text-3xl font-semibold">Welcome, {user.name}</h1>
+      <div className="from-navy to-navy-soft relative flex flex-wrap items-center justify-between gap-4 overflow-hidden rounded-md bg-gradient-to-br px-6 py-6 text-white">
+        <div
+          aria-hidden="true"
+          className="bg-gold pointer-events-none absolute -top-16 -right-16 size-48 rounded-full opacity-20 blur-3xl"
+        />
+        <div className="relative">
+          <p className="text-gold text-xs font-bold tracking-[0.16em] uppercase">Dashboard</p>
+          <h1 className="mt-1 font-serif text-3xl font-semibold">Welcome, {user.name}</h1>
         </div>
         <Link
           href="/admin/articles/new"
-          className="bg-navy hover:bg-blue-dark rounded-sm px-5 py-2.5 text-sm font-bold text-white transition-colors"
+          className="bg-gold hover:bg-gold/90 text-navy relative rounded-sm px-5 py-2.5 text-sm font-bold transition-colors"
         >
           New Article
         </Link>
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        {stats.map(({ label, value, Icon }) => (
-          <div key={label} className="border-line bg-paper-raised rounded-sm border p-4">
-            <Icon className="text-blue size-5" />
+        {stats.map(({ label, value, Icon, accent }) => (
+          <div
+            key={label}
+            className="border-line bg-paper-raised hover:shadow-raised rounded-sm border p-4 transition-all duration-200 hover:-translate-y-0.5"
+          >
+            <div className={`flex size-9 items-center justify-center rounded-full ${accent}`}>
+              <Icon className="size-4.5" />
+            </div>
             <p className="text-ink mt-3 text-2xl font-bold tabular-nums">
               {value.toLocaleString()}
             </p>
@@ -79,9 +115,11 @@ export default async function AdminDashboardPage() {
         </div>
 
         {recentArticles.length === 0 ? (
-          <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
-            No articles yet — create your first one to see it here.
-          </p>
+          <EmptyState
+            icon={ArticleIcon}
+            title="No articles yet"
+            description="Create your first one to see it here."
+          />
         ) : (
           <div className="border-line bg-paper-raised overflow-x-auto rounded-sm border">
             <table className="w-full text-sm">
@@ -96,7 +134,10 @@ export default async function AdminDashboardPage() {
               </thead>
               <tbody>
                 {recentArticles.map((article) => (
-                  <tr key={article.id} className="border-line border-b last:border-0">
+                  <tr
+                    key={article.id}
+                    className="border-line hover:bg-blue-tint/40 border-b transition-colors last:border-0"
+                  >
                     <td className="max-w-xs truncate px-4 py-3 font-medium">
                       <Link
                         href={`/admin/articles/${article.id}/edit`}

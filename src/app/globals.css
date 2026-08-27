@@ -121,3 +121,27 @@ body {
   color: var(--color-ink);
   margin: 2em 0;
 }
+
+/* Homepage decorative background wash — slow drifting color blobs used
+   behind the hero/latest-news area. Kept to a handful of very low-opacity
+   blurred circles so it reads as "warm color wash," not a generic gradient
+   hero. Disabled under reduced motion (still visible, just static). */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(3%, -4%) scale(1.08);
+  }
+}
+
+.bg-drift {
+  animation: drift 20s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-drift {
+    animation: none;
+  }
+}

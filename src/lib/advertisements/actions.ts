@@ -1,10 +1,12 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { del } from '@vercel/blob'
 import { z } from 'zod'
 import { db } from '@/lib/db'
 import { requireRole } from '@/lib/auth/rbac'
 import { AdPlacement, UserRole } from '@/generated/prisma/enums'
+import { uploadImageToBlob } from '@/lib/media/upload'
 
 export interface AdvertisementActionState {
   error?: string
@@ -42,6 +44,28 @@ function parseFormData(formData: FormData) {
     endDate: formData.get('endDate'),
     isActive: formData.get('isActive') === 'on',
   })
+}
+
+export interface AdvertisementImageUploadResult {
+  url: string
+}
+
+// Direct-call action (not the (prevState, formData) shape) for uploading an
+// ad's creative image from device — ads don't get a Media Library row, just
+// a blob URL, since they're one-off campaign assets rather than reusable
+// article media.
+export async function uploadAdvertisementImage(
+  formData: FormData
+): Promise<AdvertisementImageUploadResult> {
+  await requireRole(UserRole.EDITOR)
+
+  const file = formData.get('file')
+  if (!(file instanceof File) || file.size === 0) {
+    throw new Error('No file provided.')
+  }
+
+  const uploaded = await uploadImageToBlob(file)
+  return { url: uploaded.url }
 }
 
 export async function createAdvertisement(
@@ -100,6 +124,8 @@ export async function updateAdvertisement(
     await requireRole(UserRole.ADMIN)
   }
 
+  const existing = await db.advertisement.findUnique({ where: { id }, select: { imageUrl: true } })
+
   await db.advertisement.update({
     where: { id },
     data: {
@@ -114,6 +140,13 @@ export async function updateAdvertisement(
     },
   })
 
+  // Best-effort: clean up the replaced image so uploads that get swapped out
+  // don't silently accumulate in blob storage. Non-fatal if it fails (e.g.
+  // the old URL was a manually-pasted external link, not one of ours).
+  if (existing?.imageUrl && existing.imageUrl !== (parsed.data.imageUrl || null)) {
+    await del(existing.imageUrl).catch(() => undefined)
+  }
+
   revalidatePath('/admin/advertisements')
   return { success: true }
 }
@@ -126,6 +159,10 @@ export async function toggleAdvertisementActive(id: string, isActive: boolean): 
 
 export async function deleteAdvertisement(id: string): Promise<void> {
   await requireRole(UserRole.EDITOR)
+  const ad = await db.advertisement.findUnique({ where: { id }, select: { imageUrl: true } })
   await db.advertisement.delete({ where: { id } })
+  if (ad?.imageUrl) {
+    await del(ad.imageUrl).catch(() => undefined)
+  }
   revalidatePath('/admin/advertisements')
 }

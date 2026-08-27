@@ -5,6 +5,8 @@ import { db } from '@/lib/db'
 import { hasRole } from '@/lib/auth/rbac'
 import { UploadForm } from './UploadForm'
 import { MediaItem } from './MediaItem'
+import { EmptyState } from '@/components/admin/EmptyState'
+import { MediaIcon } from '@/components/admin/icons'
 
 export const metadata: Metadata = {
   title: 'Media Library',
@@ -22,9 +24,11 @@ export default async function MediaLibraryPage() {
       </div>
       <UploadForm />
       {media.length === 0 ? (
-        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
-          No media uploaded yet.
-        </p>
+        <EmptyState
+          icon={MediaIcon}
+          title="No media uploaded yet"
+          description="Upload an image above to start building the library."
+        />
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {media.map((item) => (

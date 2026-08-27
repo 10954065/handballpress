@@ -95,13 +95,13 @@ function SidebarContent({ pathname, userName, userRole }: SidebarContentProps) {
                     <Link
                       href={href}
                       aria-current={active ? 'page' : undefined}
-                      className={`flex items-center gap-2.5 rounded-sm px-3 py-2 text-sm font-medium transition-colors ${
+                      className={`relative flex items-center gap-2.5 rounded-sm py-2 pr-3 text-sm font-medium transition-all duration-200 ${
                         active
-                          ? 'bg-white/10 text-white'
-                          : 'text-white/70 hover:bg-white/5 hover:text-white'
+                          ? 'from-blue/25 border-gold border-l-2 bg-gradient-to-r to-transparent pl-[10px] text-white'
+                          : 'border-l-2 border-transparent pl-[10px] text-white/70 hover:bg-white/5 hover:text-white'
                       }`}
                     >
-                      <Icon className="size-4.5 shrink-0" />
+                      <Icon className={`size-4.5 shrink-0 ${active ? 'text-gold' : ''}`} />
                       {label}
                     </Link>
                   </li>

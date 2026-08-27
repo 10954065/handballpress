@@ -20,7 +20,7 @@ export function SubscriberRow({ subscriber }: SubscriberRowProps) {
   const isSubscribed = subscriber.status === SubscriberStatus.SUBSCRIBED
 
   return (
-    <tr className="border-line border-b last:border-0">
+    <tr className="border-line hover:bg-blue-tint/40 border-b transition-colors last:border-0">
       <td className="px-4 py-3">{subscriber.email}</td>
       <td className="text-ink-soft px-4 py-3">{subscriber.source ?? '—'}</td>
       <td className="text-ink-soft px-4 py-3">{formatDate(subscriber.subscribedAt)}</td>

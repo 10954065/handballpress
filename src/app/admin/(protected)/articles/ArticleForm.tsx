@@ -70,6 +70,7 @@ export function ArticleForm({
   const router = useRouter()
   const action = article ? updateArticle : createArticle
   const [content, setContent] = useState<JSONContent>(article?.contentJson ?? EMPTY_DOC)
+  const [mediaList, setMediaList] = useState<MediaOption[]>(media)
   const [featuredImageId, setFeaturedImageId] = useState(article?.featuredImageId ?? '')
   const [publishMode, setPublishMode] = useState<'draft' | 'now' | 'schedule'>(
     article?.status === 'PUBLISHED' ? 'now' : article?.status === 'SCHEDULED' ? 'schedule' : 'draft'
@@ -81,7 +82,7 @@ export function ArticleForm({
   const [seoTitle, setSeoTitle] = useState(article?.seoTitle ?? '')
   const [seoDescription, setSeoDescription] = useState(article?.seoDescription ?? '')
 
-  const featuredImageUrl = media.find((item) => item.id === featuredImageId)?.url ?? null
+  const featuredImageUrl = mediaList.find((item) => item.id === featuredImageId)?.url ?? null
 
   const [state, formAction, isPending] = useActionState(
     async (prevState: ArticleActionState, formData: FormData) => {
@@ -225,9 +226,13 @@ export function ArticleForm({
           <p className={PANEL_TITLE}>Featured image</p>
           <input type="hidden" name="featuredImageId" value={featuredImageId} />
           <FeaturedImagePicker
-            media={media}
+            media={mediaList}
             value={featuredImageId}
             onChange={setFeaturedImageId}
+            onUploaded={(newMedia) => {
+              setMediaList((prev) => [newMedia, ...prev])
+              setFeaturedImageId(newMedia.id)
+            }}
           />
         </div>
 

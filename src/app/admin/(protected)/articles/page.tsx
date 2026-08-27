@@ -4,6 +4,8 @@ import { requireRole, hasRole } from '@/lib/auth/rbac'
 import { UserRole, ArticleStatus } from '@/generated/prisma/enums'
 import { db } from '@/lib/db'
 import { ArticleRow } from './ArticleRow'
+import { EmptyState } from '@/components/admin/EmptyState'
+import { ArticleIcon } from '@/components/admin/icons'
 
 export const metadata: Metadata = {
   title: 'Articles',
@@ -62,9 +64,11 @@ export default async function ArticlesPage({ searchParams }: PageProps<'/admin/a
       </div>
 
       {articles.length === 0 ? (
-        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
-          No articles yet.
-        </p>
+        <EmptyState
+          icon={ArticleIcon}
+          title="No articles yet"
+          description="Create your first article to see it listed here."
+        />
       ) : (
         <div className="border-line bg-paper-raised overflow-x-auto rounded-sm border">
           <table className="w-full text-sm">

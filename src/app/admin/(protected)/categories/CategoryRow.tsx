@@ -30,7 +30,7 @@ export function CategoryRow({ category }: CategoryRowProps) {
   }
 
   return (
-    <tr className="border-line border-b last:border-0">
+    <tr className="border-line hover:bg-blue-tint/40 border-b transition-colors last:border-0">
       <td className="px-4 py-3 font-medium">{category.name}</td>
       <td className="text-muted px-4 py-3">/{category.slug}</td>
       <td className="text-ink-soft px-4 py-3">{category.articleCount}</td>

@@ -1,6 +1,8 @@
 'use client'
 
 import Image from 'next/image'
+import { uploadEditorImage } from '@/lib/media/actions'
+import { ImageDropzone } from '@/components/admin/ImageDropzone'
 
 interface MediaOption {
   id: string
@@ -12,11 +14,26 @@ interface FeaturedImagePickerProps {
   media: MediaOption[]
   value: string
   onChange: (mediaId: string) => void
+  onUploaded: (media: MediaOption) => void
 }
 
-export function FeaturedImagePicker({ media, value, onChange }: FeaturedImagePickerProps) {
+export function FeaturedImagePicker({
+  media,
+  value,
+  onChange,
+  onUploaded,
+}: FeaturedImagePickerProps) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
+      <ImageDropzone
+        label="Upload from device"
+        uploadFn={async (file) => {
+          const formData = new FormData()
+          formData.set('file', file)
+          return uploadEditorImage(formData)
+        }}
+        onUploaded={onUploaded}
+      />
       <div className="flex flex-wrap gap-2">
         <button
           type="button"

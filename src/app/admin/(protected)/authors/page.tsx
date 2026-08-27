@@ -4,6 +4,8 @@ import { UserRole } from '@/generated/prisma/enums'
 import { db } from '@/lib/db'
 import { AuthorForm } from './AuthorForm'
 import { AuthorRow } from './AuthorRow'
+import { EmptyState } from '@/components/admin/EmptyState'
+import { AuthorIcon } from '@/components/admin/icons'
 
 export const metadata: Metadata = {
   title: 'Authors',
@@ -26,9 +28,11 @@ export default async function AuthorsPage() {
         <AuthorForm />
       </div>
       {authors.length === 0 ? (
-        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
-          No authors yet.
-        </p>
+        <EmptyState
+          icon={AuthorIcon}
+          title="No authors yet"
+          description="Add a byline above so it can be attributed on articles."
+        />
       ) : (
         <div className="flex flex-col gap-3">
           {authors.map((author) => (

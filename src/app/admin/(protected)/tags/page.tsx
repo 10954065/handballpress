@@ -4,6 +4,8 @@ import { UserRole } from '@/generated/prisma/enums'
 import { db } from '@/lib/db'
 import { TagForm } from './TagForm'
 import { TagChip } from './TagChip'
+import { EmptyState } from '@/components/admin/EmptyState'
+import { TagIcon } from '@/components/admin/icons'
 
 export const metadata: Metadata = {
   title: 'Tags',
@@ -26,9 +28,11 @@ export default async function TagsPage() {
         <TagForm />
       </div>
       {tags.length === 0 ? (
-        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
-          No tags yet.
-        </p>
+        <EmptyState
+          icon={TagIcon}
+          title="No tags yet"
+          description="Tags help readers find related coverage across articles."
+        />
       ) : (
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (

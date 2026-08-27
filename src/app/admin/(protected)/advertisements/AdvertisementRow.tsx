@@ -42,7 +42,7 @@ export function AdvertisementRow({ advertisement }: AdvertisementRowProps) {
   const isScheduled = advertisement.startDate > now
 
   return (
-    <tr className="border-line border-b last:border-0">
+    <tr className="border-line hover:bg-blue-tint/40 border-b transition-colors last:border-0">
       <td className="px-4 py-3 font-medium">{advertisement.name}</td>
       <td className="text-ink-soft px-4 py-3">{advertisement.placement.replaceAll('_', ' ')}</td>
       <td className="text-ink-soft px-4 py-3">

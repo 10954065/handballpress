@@ -4,6 +4,8 @@ import { UserRole } from '@/generated/prisma/enums'
 import { db } from '@/lib/db'
 import { AdvertisementForm } from './AdvertisementForm'
 import { AdvertisementRow } from './AdvertisementRow'
+import { EmptyState } from '@/components/admin/EmptyState'
+import { AdIcon } from '@/components/admin/icons'
 
 export const metadata: Metadata = { title: 'Advertisements' }
 
@@ -21,9 +23,11 @@ export default async function AdvertisementsPage() {
         <AdvertisementForm />
       </div>
       {advertisements.length === 0 ? (
-        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
-          No advertisements yet.
-        </p>
+        <EmptyState
+          icon={AdIcon}
+          title="No advertisements yet"
+          description="Create a campaign above and upload its creative to get it running."
+        />
       ) : (
         <div className="border-line bg-paper-raised overflow-x-auto rounded-sm border">
           <table className="w-full text-sm">

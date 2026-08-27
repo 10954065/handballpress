@@ -45,7 +45,7 @@ export function ArticleRow({ article, canPublish }: ArticleRowProps) {
   }
 
   return (
-    <tr className="border-line border-b align-top last:border-0">
+    <tr className="border-line hover:bg-blue-tint/40 border-b align-top transition-colors last:border-0">
       <td className="px-4 py-3">
         <Link
           href={`/admin/articles/${article.id}/edit`}

@@ -1,12 +1,15 @@
 'use client'
 
-import { useActionState, useRef } from 'react'
+import { useActionState, useRef, useState } from 'react'
 import {
   createAdvertisement,
   updateAdvertisement,
+  uploadAdvertisementImage,
   type AdvertisementActionState,
 } from '@/lib/advertisements/actions'
 import { AdPlacement } from '@/generated/prisma/enums'
+import { ImageDropzone } from '@/components/admin/ImageDropzone'
+import { CloseIcon } from '@/components/public/icons'
 
 interface AdvertisementFormProps {
   advertisement?: {
@@ -32,12 +35,14 @@ function toDateTimeLocal(date: Date): string {
 
 export function AdvertisementForm({ advertisement, onDone }: AdvertisementFormProps) {
   const formRef = useRef<HTMLFormElement>(null)
+  const [imageUrl, setImageUrl] = useState(advertisement?.imageUrl ?? '')
   const action = advertisement ? updateAdvertisement : createAdvertisement
   const [state, formAction, isPending] = useActionState(
     async (prevState: AdvertisementActionState, formData: FormData) => {
       const result = await action(prevState, formData)
       if (result.success) {
         formRef.current?.reset()
+        setImageUrl('')
         onDone?.()
       }
       return result
@@ -86,16 +91,31 @@ export function AdvertisementForm({ advertisement, onDone }: AdvertisementFormPr
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-ink text-sm font-semibold" htmlFor={`imageUrl-${idSuffix}`}>
-          Image URL
-        </label>
-        <input
-          id={`imageUrl-${idSuffix}`}
-          name="imageUrl"
-          type="url"
-          placeholder="https://…"
-          defaultValue={advertisement?.imageUrl ?? ''}
-          className={inputClass}
+        <span className="text-ink text-sm font-semibold">Ad image</span>
+        <input type="hidden" name="imageUrl" value={imageUrl} />
+        {imageUrl && (
+          <div className="border-line bg-paper relative w-fit overflow-hidden rounded-sm border">
+            {/* Ad creative dimensions vary per campaign — same rationale as AdSlot's plain <img>. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={imageUrl} alt="" className="max-h-28 w-auto" />
+            <button
+              type="button"
+              onClick={() => setImageUrl('')}
+              aria-label="Remove image"
+              className="absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white hover:bg-black/80"
+            >
+              <CloseIcon className="size-3.5" />
+            </button>
+          </div>
+        )}
+        <ImageDropzone
+          label={imageUrl ? 'Replace image' : 'Upload ad image'}
+          uploadFn={async (file) => {
+            const formData = new FormData()
+            formData.set('file', file)
+            return uploadAdvertisementImage(formData)
+          }}
+          onUploaded={(result) => setImageUrl(result.url)}
         />
       </div>
       <div className="flex flex-col gap-1.5">

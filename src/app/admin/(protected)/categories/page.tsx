@@ -4,6 +4,8 @@ import { UserRole } from '@/generated/prisma/enums'
 import { db } from '@/lib/db'
 import { CategoryForm } from './CategoryForm'
 import { CategoryRow } from './CategoryRow'
+import { EmptyState } from '@/components/admin/EmptyState'
+import { CategoryIcon } from '@/components/admin/icons'
 
 export const metadata: Metadata = {
   title: 'Categories',
@@ -26,9 +28,11 @@ export default async function CategoriesPage() {
         <CategoryForm />
       </div>
       {categories.length === 0 ? (
-        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
-          No categories yet.
-        </p>
+        <EmptyState
+          icon={CategoryIcon}
+          title="No categories yet"
+          description="Add your first category above to start organizing articles."
+        />
       ) : (
         <div className="border-line bg-paper-raised overflow-x-auto rounded-sm border">
           <table className="w-full text-sm">

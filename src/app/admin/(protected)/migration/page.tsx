@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { requireRole } from '@/lib/auth/rbac'
 import { UserRole } from '@/generated/prisma/enums'
 import { db } from '@/lib/db'
+import { EmptyState } from '@/components/admin/EmptyState'
+import { MigrationIcon } from '@/components/admin/icons'
 
 export const metadata: Metadata = { title: 'WordPress Migration' }
 
@@ -57,9 +59,11 @@ export default async function MigrationReportPage() {
       </div>
 
       {total === 0 && (
-        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-10 text-center text-sm">
-          No migration has been run yet.
-        </p>
+        <EmptyState
+          icon={MigrationIcon}
+          title="No migration has been run yet"
+          description="Run the script above to import content from WordPress."
+        />
       )}
 
       {problemRecords.length > 0 && (

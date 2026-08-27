@@ -31,7 +31,7 @@ export function AuthorRow({ author }: AuthorRowProps) {
   }
 
   return (
-    <div className="border-line bg-paper-raised flex items-center gap-4 rounded-sm border p-4">
+    <div className="border-line bg-paper-raised hover:border-blue/40 hover:shadow-raised flex items-center gap-4 rounded-sm border p-4 transition-all duration-200 hover:-translate-y-0.5">
       <div className="bg-ink/[0.06] relative h-12 w-12 shrink-0 overflow-hidden rounded-full">
         {author.photoUrl && (
           <Image

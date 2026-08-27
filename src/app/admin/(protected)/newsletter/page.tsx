@@ -3,6 +3,8 @@ import { requireRole } from '@/lib/auth/rbac'
 import { UserRole, SubscriberStatus } from '@/generated/prisma/enums'
 import { db } from '@/lib/db'
 import { SubscriberRow } from './SubscriberRow'
+import { EmptyState } from '@/components/admin/EmptyState'
+import { NewsletterIcon } from '@/components/admin/icons'
 
 export const metadata: Metadata = { title: 'Newsletter' }
 
@@ -44,9 +46,11 @@ export default async function NewsletterPage() {
       </div>
 
       {subscribers.length === 0 ? (
-        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
-          No subscribers yet.
-        </p>
+        <EmptyState
+          icon={NewsletterIcon}
+          title="No subscribers yet"
+          description="Sign-ups from the site's footer form will appear here."
+        />
       ) : (
         <div className="border-line bg-paper-raised overflow-x-auto rounded-sm border">
           <table className="w-full text-sm">
