@@ -33,7 +33,7 @@ export default async function MigrationReportPage() {
         <h1 className="text-ink mt-1 font-serif text-3xl font-semibold">WordPress Migration</h1>
         <p className="text-muted mt-2 max-w-2xl text-sm">
           Results from the last run of{' '}
-          <code className="bg-ink/[0.06] rounded-sm px-1 py-0.5">
+          <code className="bg-ink/[0.06] text-ink rounded-sm px-1 py-0.5">
             npx tsx scripts/wordpress-migration/migrate.ts
           </code>
           . Safe to rerun at any time — every post is matched by its WordPress ID, so a rerun

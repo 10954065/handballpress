@@ -12,7 +12,7 @@ export function TrendingList({ articles }: TrendingListProps) {
     <ol className="flex flex-col gap-5">
       {articles.map((article, index) => (
         <li key={article.id} className="flex items-baseline gap-4">
-          <span className="text-line-strong font-serif text-3xl leading-none font-bold tabular-nums">
+          <span className="text-muted font-serif text-3xl leading-none font-bold tabular-nums">
             {String(index + 1).padStart(2, '0')}
           </span>
           <div className="min-w-0">

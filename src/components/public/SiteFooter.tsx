@@ -78,7 +78,7 @@ export function SiteFooter({ categories, socialLinks }: SiteFooterProps) {
         </div>
       </div>
 
-      <div className="border-t border-white/10 px-4 py-6 text-center text-xs text-white/40 sm:px-6">
+      <div className="border-t border-white/10 px-4 py-6 text-center text-xs text-white/60 sm:px-6">
         © {new Date().getFullYear()} Handball Press GH. All rights reserved.
       </div>
     </footer>

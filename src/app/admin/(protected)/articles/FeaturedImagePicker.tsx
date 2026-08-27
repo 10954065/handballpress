@@ -32,15 +32,10 @@ export function FeaturedImagePicker({ media, value, onChange }: FeaturedImagePic
             type="button"
             onClick={() => onChange(item.id)}
             data-selected={value === item.id}
+            aria-label={`Use ${item.altText || 'this image'} as the featured image`}
             className="border-line data-[selected=true]:border-blue relative h-16 w-16 overflow-hidden rounded-sm border data-[selected=true]:border-2"
           >
-            <Image
-              src={item.url}
-              alt={item.altText ?? ''}
-              fill
-              sizes="64px"
-              className="object-cover"
-            />
+            <Image src={item.url} alt="" fill sizes="64px" className="object-cover" />
           </button>
         ))}
       </div>

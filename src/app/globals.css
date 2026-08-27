@@ -32,11 +32,20 @@
   --color-blue-dark: #123fa0;
   --color-blue-tint: #eaf1ff;
   --color-gold: #f2b705;
-  --color-gold-dark: #a97c00;
+  /* #8a6800 (not the original #a97c00): the category-kicker text color needs
+     4.5:1 against white/paper at the small bold sizes it's used at across
+     the site (12px bold is below WCAG's "large text" threshold, so the
+     3:1 large-text minimum doesn't apply) — #a97c00 measured ~3.5:1 and
+     failed an axe-core audit; #8a6800 measures ~5.2:1. */
+  --color-gold-dark: #8a6800;
   --color-gold-tint: #fdf3d6;
 
   /* Semantic */
-  --color-success: #1a7f4b;
+  /* #146d40 (not #1a7f4b): text-success on its own bg-success/10 badge
+     background measured 4.38:1 against axe-core's 4.5:1 requirement —
+     darkened for a safe margin (~5.6:1) at the small badge text sizes
+     it's used at across the admin (StatusBadge, AdvertisementRow). */
+  --color-success: #146d40;
   --color-warning: #b45309;
   --color-error: #c81e3a;
 

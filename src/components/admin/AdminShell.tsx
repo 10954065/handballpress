@@ -84,7 +84,7 @@ function SidebarContent({ pathname, userName, userRole }: SidebarContentProps) {
       <nav className="flex-1 overflow-y-auto px-3 pb-6">
         {NAV_GROUPS.map((group) => (
           <div key={group.label} className="mb-5">
-            <p className="px-3 pb-2 text-[10px] font-bold tracking-[0.16em] text-white/40 uppercase">
+            <p className="px-3 pb-2 text-[10px] font-bold tracking-[0.16em] text-white/60 uppercase">
               {group.label}
             </p>
             <ul className="flex flex-col gap-0.5">
