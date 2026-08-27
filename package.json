@@ -19,7 +19,8 @@
     "db:generate": "prisma generate",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
-    "migrate:wordpress": "tsx scripts/wordpress-migration/migrate.ts"
+    "migrate:wordpress": "tsx scripts/wordpress-migration/migrate.ts",
+    "generate:brand-assets": "tsx scripts/generate-brand-assets.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.1.0",

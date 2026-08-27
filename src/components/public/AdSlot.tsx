@@ -24,17 +24,30 @@ export async function AdSlot({ placement, className }: AdSlotProps) {
     // Ad creative dimensions vary per campaign — a plain <img> avoids
     // fighting next/image's required width/height for arbitrary sizes.
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={ad.imageUrl} alt={ad.name} className="mx-auto h-auto max-w-full" />
+    <img
+      src={ad.imageUrl}
+      alt={ad.name}
+      className="mx-auto h-auto max-w-full rounded-md transition-transform duration-300 group-hover:scale-[1.015]"
+    />
   ) : null
 
   if (!inner) return null
 
   return (
-    <div className={`border-line bg-paper-raised border ${className ?? ''}`}>
-      <p className="text-muted px-3 pt-2 text-[10px] tracking-[0.14em] uppercase">Advertisement</p>
+    <div
+      className={`border-line bg-paper-raised shadow-card overflow-hidden rounded-md border ${className ?? ''}`}
+    >
+      <p className="text-faint border-line/60 border-b px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] uppercase">
+        Advertisement
+      </p>
       <div className="p-3">
         {ad.linkUrl ? (
-          <a href={`/ads/${ad.id}/click`} target="_blank" rel="noopener noreferrer sponsored">
+          <a
+            href={`/ads/${ad.id}/click`}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            className="group block"
+          >
             {inner}
           </a>
         ) : (

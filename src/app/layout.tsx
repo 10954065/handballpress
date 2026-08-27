@@ -36,6 +36,21 @@ export const metadata: Metadata = {
     ],
     apple: '/apple-touch-icon.png',
   },
+  openGraph: {
+    type: 'website',
+    siteName: 'Handball Press GH',
+    title: 'Handball Press GH',
+    description:
+      'Play to the tune of development! Ghana handball news, match reports, interviews and features.',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Handball Press GH' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Handball Press GH',
+    description:
+      'Play to the tune of development! Ghana handball news, match reports, interviews and features.',
+    images: ['/og-image.png'],
+  },
 }
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
