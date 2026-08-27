@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Fraunces } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { clientEnv } from '@/lib/env.client'
 import './globals.css'
 
@@ -47,7 +49,18 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           href="/feed.xml"
         />
       </head>
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {children}
+        {/* Safe to always render — no-ops off Vercel infrastructure. On a
+            real Vercel deployment both load their script from a same-origin
+            path (/_vercel/insights/...), so next.config.ts's CSP needs no
+            allowance for them. Locally they fall back to an external
+            va.vercel-scripts.com debug script that the CSP correctly blocks
+            (console noise only — not a bug, and not worth loosening the
+            policy for a dev-only convenience). */}
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   )
 }
