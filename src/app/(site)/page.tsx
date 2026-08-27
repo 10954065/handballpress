@@ -4,6 +4,8 @@ import { ArticleCard } from '@/components/public/ArticleCard'
 import { SectionHeading } from '@/components/public/SectionHeading'
 import { JsonLd } from '@/components/public/JsonLd'
 import { buildWebsiteSchema } from '@/lib/structured-data'
+import { AdSlot } from '@/components/public/AdSlot'
+import { AdPlacement } from '@/generated/prisma/enums'
 
 export const metadata: Metadata = {
   description:
@@ -39,6 +41,8 @@ export default async function HomePage() {
       <section className="border-line border-b pb-10">
         <ArticleCard article={hero} variant="hero" priority />
       </section>
+
+      <AdSlot placement={AdPlacement.HOMEPAGE_HERO} className="my-8" />
 
       {secondary.length > 0 && (
         <section className="border-line grid gap-x-6 gap-y-10 border-b py-10 sm:grid-cols-2 lg:grid-cols-4">

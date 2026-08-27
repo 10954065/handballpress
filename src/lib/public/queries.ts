@@ -1,6 +1,6 @@
 import 'server-only'
 import { db } from '@/lib/db'
-import { ArticleStatus } from '@/generated/prisma/enums'
+import { ArticleStatus, type AdPlacement } from '@/generated/prisma/enums'
 
 export const ARTICLES_PER_PAGE = 12
 
@@ -73,6 +73,14 @@ export async function getActiveBreakingNews() {
     },
     orderBy: { createdAt: 'desc' },
     take: 8,
+  })
+}
+
+export async function getActiveAdvertisement(placement: AdPlacement) {
+  const now = new Date()
+  return db.advertisement.findFirst({
+    where: { placement, isActive: true, startDate: { lte: now }, endDate: { gte: now } },
+    orderBy: { createdAt: 'desc' },
   })
 }
 

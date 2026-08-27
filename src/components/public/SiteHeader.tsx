@@ -1,18 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import { SearchIcon, MenuIcon, CloseIcon } from './icons'
 
 interface SiteHeaderProps {
   categories: { name: string; slug: string }[]
+  // AdSlot is a Server Component and can't be imported/rendered directly
+  // inside this Client Component (needed for the mobile menu's state) —
+  // the parent layout renders it and passes the result down as a slot.
+  adSlot?: ReactNode
 }
 
-export function SiteHeader({ categories }: SiteHeaderProps) {
+export function SiteHeader({ categories, adSlot }: SiteHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
     <header className="bg-paper border-line sticky top-0 z-40 border-b">
+      {adSlot && <div className="mx-auto max-w-6xl px-4 pt-3 sm:px-6">{adSlot}</div>}
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
         <Link href="/" className="flex items-baseline gap-2">
           <span className="font-serif text-2xl font-bold tracking-tight sm:text-3xl">

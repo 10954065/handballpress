@@ -8,6 +8,8 @@ const NAV_LINKS = [
   { href: '/admin/categories', label: 'Categories' },
   { href: '/admin/tags', label: 'Tags' },
   { href: '/admin/authors', label: 'Authors' },
+  { href: '/admin/advertisements', label: 'Ads' },
+  { href: '/admin/newsletter', label: 'Newsletter' },
   { href: '/admin/migration', label: 'Migration' },
 ]
 

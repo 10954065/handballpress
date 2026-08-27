@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { db } from '@/lib/db'
 import { getCurrentUser, hasRole } from '@/lib/auth/rbac'
-import { UserRole, ArticleStatus } from '@/generated/prisma/enums'
+import { UserRole, ArticleStatus, AdPlacement } from '@/generated/prisma/enums'
+import { AdSlot } from '@/components/public/AdSlot'
 import { publishDueScheduledArticles } from '@/lib/articles/scheduling'
 import { getRelatedArticles } from '@/lib/public/queries'
 import { formatDate } from '@/lib/format'
@@ -166,6 +167,8 @@ export default async function ArticlePage({ params }: PageProps<'/news/[slug]'>)
       )}
 
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
+        <AdSlot placement={AdPlacement.ARTICLE_TOP} className="mb-8" />
+
         {article.matchReport && (
           <MatchScoreboard
             competition={article.matchReport.competition}
@@ -186,11 +189,17 @@ export default async function ArticlePage({ params }: PageProps<'/news/[slug]'>)
           dangerouslySetInnerHTML={{ __html: article.contentHtml }}
         />
 
+        <AdSlot placement={AdPlacement.ARTICLE_MIDDLE} className="mt-8" />
+
         {article.updatedAt && article.publishedAt && article.updatedAt > article.publishedAt && (
           <p className="text-muted border-line mt-8 border-t pt-4 text-xs">
             Last updated {formatDate(article.updatedAt)}
           </p>
         )}
+      </div>
+
+      <div className="mx-auto max-w-3xl px-4 sm:px-6">
+        <AdSlot placement={AdPlacement.ARTICLE_BOTTOM} />
       </div>
 
       {relatedArticles.length > 0 && (
