@@ -15,7 +15,11 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   return (
     <div className="bg-paper text-ink flex min-h-screen flex-1 flex-col">
       <BreakingNewsBar items={breakingNews} />
-      <SiteHeader categories={categories} adSlot={<AdSlot placement={AdPlacement.HEADER} />} />
+      <SiteHeader
+        categories={categories}
+        socialLinks={socialLinks}
+        adSlot={<AdSlot placement={AdPlacement.HEADER} />}
+      />
       <main className="flex-1">{children}</main>
       <AdSlot placement={AdPlacement.FOOTER} className="mx-auto my-8 max-w-6xl" />
       <SiteFooter categories={categories} socialLinks={socialLinks} />

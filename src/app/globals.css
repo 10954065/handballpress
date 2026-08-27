@@ -1,43 +1,51 @@
 @import 'tailwindcss';
 
 /*
- * Editorial identity for the public site: warm paper background, near-black
- * ink, a crimson "urgency" accent for sport, and a gold accent nodding to
- * Ghana without being a literal flag palette. Admin UI keeps the plain
- * neutral scale (see admin layout) — these tokens are for the public site.
+ * Handball Press GH brand system — grounded in the actual crest logo
+ * (deep navy ring, electric blue glow/lightning, gold "PRESS GH" text).
+ * Single light editorial theme by deliberate choice, not an oversight: a
+ * correct dark theme needs its own considered palette rather than a
+ * `prefers-color-scheme` flip of these tokens (that pattern previously
+ * caused a real light-text-on-light-background bug in this project when a
+ * background token and a hardcoded text color diverged across schemes).
+ * Revisit as a dedicated theme, not a media-query override, if wanted later.
  */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f7f5;
+  --foreground: #0e1116;
 
-  --color-ink: #17130f;
-  --color-ink-soft: #3a322a;
-  --color-muted: #6b5f52;
-  --color-paper: #faf6ee;
+  /* Ink / neutrals — editorial reading colors */
+  --color-ink: #0e1116;
+  --color-ink-soft: #3d4451;
+  --color-muted: #6b7280;
+  --color-faint: #9aa1ab;
+  --color-paper: #f7f7f5;
   --color-paper-raised: #ffffff;
-  --color-line: rgba(23, 19, 15, 0.13);
-  --color-crimson: #c4122f;
-  --color-crimson-dark: #8f0d22;
-  --color-gold: #c98e17;
-  --color-forest: #14532d;
-}
+  --color-line: rgba(14, 17, 22, 0.12);
+  --color-line-strong: rgba(14, 17, 22, 0.22);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Brand — navy (primary), electric blue (secondary/interactive), gold (accent) */
+  --color-navy: #0b1b3f;
+  --color-navy-soft: #13294f;
+  --color-navy-tint: #eef1f8;
+  --color-blue: #1b5feb;
+  --color-blue-dark: #123fa0;
+  --color-blue-tint: #eaf1ff;
+  --color-gold: #f2b705;
+  --color-gold-dark: #a97c00;
+  --color-gold-tint: #fdf3d6;
 
-    --color-ink: #f5f1e9;
-    --color-ink-soft: #d9d0c3;
-    --color-muted: #b3a696;
-    --color-paper: #120e0b;
-    --color-paper-raised: #1c1611;
-    --color-line: rgba(245, 241, 233, 0.14);
-    --color-crimson: #ff5164;
-    --color-crimson-dark: #ff8291;
-    --color-gold: #eab04a;
-    --color-forest: #34d399;
-  }
+  /* Semantic */
+  --color-success: #1a7f4b;
+  --color-warning: #b45309;
+  --color-error: #c81e3a;
+
+  /* Spacing/radius/shadow tokens — used sparingly by design (brief calls
+     for restraint: no excessive rounding, no random shadows). */
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --shadow-card: 0 1px 2px rgba(14, 17, 22, 0.06), 0 1px 1px rgba(14, 17, 22, 0.04);
+  --shadow-raised: 0 4px 16px rgba(14, 17, 22, 0.1), 0 1px 2px rgba(14, 17, 22, 0.06);
 }
 
 @theme inline {
@@ -50,17 +58,57 @@
   --color-ink: var(--color-ink);
   --color-ink-soft: var(--color-ink-soft);
   --color-muted: var(--color-muted);
+  --color-faint: var(--color-faint);
   --color-paper: var(--color-paper);
   --color-paper-raised: var(--color-paper-raised);
   --color-line: var(--color-line);
-  --color-crimson: var(--color-crimson);
-  --color-crimson-dark: var(--color-crimson-dark);
+  --color-line-strong: var(--color-line-strong);
+
+  --color-navy: var(--color-navy);
+  --color-navy-soft: var(--color-navy-soft);
+  --color-navy-tint: var(--color-navy-tint);
+  --color-blue: var(--color-blue);
+  --color-blue-dark: var(--color-blue-dark);
+  --color-blue-tint: var(--color-blue-tint);
   --color-gold: var(--color-gold);
-  --color-forest: var(--color-forest);
+  --color-gold-dark: var(--color-gold-dark);
+  --color-gold-tint: var(--color-gold-tint);
+
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-error: var(--color-error);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --shadow-card: var(--shadow-card);
+  --shadow-raised: var(--shadow-raised);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Editorial article body typography (long-form reading) */
+.prose-article {
+  font-size: 1.125rem;
+  line-height: 1.75;
+  color: var(--color-ink-soft);
+}
+.prose-article p + p {
+  margin-top: 1.5em;
+}
+.prose-article a {
+  color: var(--color-blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose-article blockquote {
+  border-left: 3px solid var(--color-gold);
+  padding-left: 1.25rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.375rem;
+  color: var(--color-ink);
+  margin: 2em 0;
 }

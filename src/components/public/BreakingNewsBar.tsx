@@ -13,8 +13,8 @@ export function BreakingNewsBar({ items }: BreakingNewsBarProps) {
   const looped = [...items, ...items]
 
   return (
-    <div className="bg-crimson flex items-stretch text-white">
-      <span className="bg-crimson-dark z-10 flex shrink-0 items-center px-4 py-2 text-xs font-bold tracking-[0.14em] uppercase">
+    <div className="bg-navy flex items-stretch text-white">
+      <span className="bg-gold text-navy z-10 flex shrink-0 items-center px-4 py-2 text-xs font-bold tracking-[0.14em] uppercase">
         Breaking
       </span>
       <div className="flex min-w-0 flex-1 items-center overflow-hidden">

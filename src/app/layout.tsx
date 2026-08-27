@@ -24,11 +24,18 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   metadataBase: new URL(clientEnv.NEXT_PUBLIC_SITE_URL),
   title: {
-    default: 'Hand Ball Press GH',
-    template: '%s | Hand Ball Press GH',
+    default: 'Handball Press GH',
+    template: '%s | Handball Press GH',
   },
   description:
     'Play to the tune of development! Ghana handball news, match reports, interviews and features.',
+  icons: {
+    icon: [
+      { url: '/favicon-16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
 }
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {

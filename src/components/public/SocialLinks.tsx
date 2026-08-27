@@ -46,7 +46,7 @@ export function SocialLinks({ links, className }: SocialLinksProps) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={PLATFORM_LABEL[link.platform]}
-              className="hover:text-crimson"
+              className="transition-opacity hover:opacity-60"
             >
               <Icon className="size-5" />
             </Link>

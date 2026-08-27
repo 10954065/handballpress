@@ -25,7 +25,7 @@ export function Pagination({ currentPage, totalPages, basePath, searchParams }: 
       {prevPage >= 1 ? (
         <Link
           href={pageHref(basePath, prevPage, searchParams)}
-          className="border-line text-ink-soft hover:border-crimson hover:text-crimson rounded-sm border px-4 py-2 text-sm font-medium"
+          className="border-line text-ink-soft hover:border-blue hover:text-blue rounded-sm border px-4 py-2 text-sm font-medium"
         >
           ← Newer
         </Link>
@@ -38,7 +38,7 @@ export function Pagination({ currentPage, totalPages, basePath, searchParams }: 
       {nextPage <= totalPages ? (
         <Link
           href={pageHref(basePath, nextPage, searchParams)}
-          className="border-line text-ink-soft hover:border-crimson hover:text-crimson rounded-sm border px-4 py-2 text-sm font-medium"
+          className="border-line text-ink-soft hover:border-blue hover:text-blue rounded-sm border px-4 py-2 text-sm font-medium"
         >
           Older →
         </Link>

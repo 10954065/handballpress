@@ -123,7 +123,7 @@ export default async function ArticlePage({ params }: PageProps<'/news/[slug]'>)
         )}
         <Link
           href={`/category/${article.category.slug}`}
-          className="text-crimson text-xs font-bold tracking-[0.16em] uppercase hover:underline"
+          className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase hover:underline"
         >
           {article.category.name}
         </Link>

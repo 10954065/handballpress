@@ -18,7 +18,7 @@ export default async function AboutPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-14 sm:px-6">
-      <p className="text-crimson text-xs font-bold tracking-[0.16em] uppercase">About</p>
+      <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">About</p>
       <h1 className="mt-1 font-serif text-4xl font-semibold sm:text-5xl">Handball Press GH</h1>
       <p className="text-ink-soft mt-6 text-xl leading-relaxed text-pretty">
         Play to the tune of development.
@@ -38,7 +38,7 @@ export default async function AboutPage() {
         </p>
         <p>
           Have a result, a story, or a correction? Get in touch — see the{' '}
-          <a href="/contact" className="text-crimson underline underline-offset-2">
+          <a href="/contact" className="text-blue underline underline-offset-2">
             contact page
           </a>
           .

@@ -20,7 +20,7 @@ export default async function AdminLayout({ children }: LayoutProps<'/admin'>) {
     <div className="flex min-h-screen flex-col">
       <header className="flex items-center justify-between border-b border-neutral-200 px-6 py-3 dark:border-neutral-800">
         <Link href="/admin" className="text-sm font-bold tracking-tight">
-          Hand Ball Press GH — Admin
+          Handball Press GH — Admin
         </Link>
         <nav className="flex items-center gap-4 text-sm">
           {NAV_LINKS.map((link) => (

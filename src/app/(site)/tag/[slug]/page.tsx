@@ -28,8 +28,8 @@ export default async function TagPage({ params, searchParams }: PageProps<'/tag/
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <header className="border-crimson mb-10 border-b-2 pb-4">
-        <p className="text-crimson text-xs font-bold tracking-[0.16em] uppercase">Tag</p>
+      <header className="border-gold mb-10 border-b-2 pb-4">
+        <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">Tag</p>
         <h1 className="mt-1 font-serif text-4xl font-semibold">#{tag.name}</h1>
       </header>
       <ArticleListing

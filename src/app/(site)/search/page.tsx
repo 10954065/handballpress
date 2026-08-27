@@ -25,7 +25,7 @@ export default async function SearchPage({ searchParams }: PageProps<'/search'>)
           defaultValue={query}
           placeholder="Search articles, players, clubs…"
           autoFocus
-          className="border-line bg-paper-raised focus-visible:ring-crimson w-full rounded-sm border py-3 pr-4 pl-12 text-base outline-none focus-visible:ring-2"
+          className="border-line bg-paper-raised focus-visible:ring-blue w-full rounded-sm border py-3 pr-4 pl-12 text-base outline-none focus-visible:ring-2"
         />
       </form>
 

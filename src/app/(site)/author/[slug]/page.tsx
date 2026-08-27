@@ -46,7 +46,7 @@ export default async function AuthorPage({ params, searchParams }: PageProps<'/a
           </div>
         )}
         <div>
-          <p className="text-crimson text-xs font-bold tracking-[0.16em] uppercase">Reporter</p>
+          <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">Reporter</p>
           <h1 className="mt-1 font-serif text-3xl font-semibold">{author.name}</h1>
         </div>
         {author.bio && <p className="text-ink-soft max-w-xl">{author.bio}</p>}

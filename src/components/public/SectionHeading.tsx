@@ -13,10 +13,10 @@ export function SectionHeading({ title, href, eyebrow }: SectionHeadingProps) {
   )
 
   return (
-    <div className="border-crimson mb-6 flex items-end justify-between gap-4 border-b-2 pb-3">
+    <div className="border-gold mb-6 flex items-end justify-between gap-4 border-b-2 pb-3">
       <div>
         {eyebrow && (
-          <p className="text-crimson mb-1 text-xs font-bold tracking-[0.18em] uppercase">
+          <p className="text-gold-dark mb-1 text-xs font-bold tracking-[0.18em] uppercase">
             {eyebrow}
           </p>
         )}
@@ -31,7 +31,7 @@ export function SectionHeading({ title, href, eyebrow }: SectionHeadingProps) {
       {href && (
         <Link
           href={href}
-          className="text-ink-soft hover:text-crimson flex shrink-0 items-center gap-1 text-sm font-medium whitespace-nowrap"
+          className="text-ink-soft hover:text-blue flex shrink-0 items-center gap-1 text-sm font-medium whitespace-nowrap transition-colors"
         >
           See all
           <ChevronRightIcon className="size-4" />

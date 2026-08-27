@@ -15,7 +15,7 @@ function CategoryKicker({ category }: { category: { name: string; slug: string }
   return (
     <Link
       href={`/category/${category.slug}`}
-      className="text-crimson text-xs font-bold tracking-[0.14em] uppercase hover:underline"
+      className="text-gold-dark text-xs font-bold tracking-[0.14em] uppercase hover:underline"
     >
       {category.name}
     </Link>
@@ -86,7 +86,7 @@ export function ArticleCard({ article, variant = 'secondary', priority }: Articl
         <div>
           <CategoryKicker category={article.category} />
           <h1 className="font-serif mt-2 text-3xl leading-[1.05] font-semibold text-balance sm:text-4xl lg:text-5xl">
-            <Link href={href} className="hover:text-crimson-dark transition-colors">
+            <Link href={href} className="hover:text-blue transition-colors">
               {article.title}
             </Link>
           </h1>
@@ -118,7 +118,7 @@ export function ArticleCard({ article, variant = 'secondary', priority }: Articl
         <div className="min-w-0">
           <CategoryKicker category={article.category} />
           <h3 className="font-serif mt-1 text-base leading-snug font-semibold sm:text-lg">
-            <Link href={href} className="hover:text-crimson-dark transition-colors">
+            <Link href={href} className="hover:text-blue transition-colors">
               {article.title}
             </Link>
           </h3>
@@ -142,7 +142,7 @@ export function ArticleCard({ article, variant = 'secondary', priority }: Articl
             nests it directly under a SectionHeading h2 — h4 here skipped a
             level for screen-reader heading navigation. */}
         <h3 className="font-serif mt-2 text-sm leading-snug font-semibold sm:text-base">
-          <Link href={href} className="hover:text-crimson-dark transition-colors">
+          <Link href={href} className="hover:text-blue transition-colors">
             {article.title}
           </Link>
         </h3>
@@ -161,7 +161,7 @@ export function ArticleCard({ article, variant = 'secondary', priority }: Articl
       </Link>
       <CategoryKicker category={article.category} />
       <h3 className="font-serif mt-1.5 text-lg leading-snug font-semibold text-balance">
-        <Link href={href} className="hover:text-crimson-dark transition-colors">
+        <Link href={href} className="hover:text-blue transition-colors">
           {article.title}
         </Link>
       </h3>

@@ -13,7 +13,7 @@ export default async function UnsubscribePage({ searchParams }: UnsubscribePageP
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-14 sm:px-6">
-      <p className="text-crimson text-xs font-bold tracking-[0.16em] uppercase">Newsletter</p>
+      <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">Newsletter</p>
       {result === 'unsubscribed' ? (
         <>
           <h1 className="mt-1 font-serif text-4xl font-semibold sm:text-5xl">

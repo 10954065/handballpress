@@ -22,7 +22,7 @@ export default async function ArchivePage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-      <header className="border-crimson mb-10 border-b-2 pb-4">
+      <header className="border-gold mb-10 border-b-2 pb-4">
         <h1 className="font-serif text-4xl font-semibold">Archive</h1>
         <p className="text-ink-soft mt-2">Every published story, organized by month.</p>
       </header>
@@ -38,7 +38,7 @@ export default async function ArchivePage() {
                 <li key={`${entry.year}-${entry.month}`}>
                   <Link
                     href={`/archive/${entry.year}/${entry.month}`}
-                    className="hover:text-crimson flex items-baseline justify-between gap-2 text-sm"
+                    className="hover:text-blue flex items-baseline justify-between gap-2 text-sm"
                   >
                     <span>{formatMonthYear(entry.year, entry.month)}</span>
                     <span className="text-muted">{entry.count}</span>

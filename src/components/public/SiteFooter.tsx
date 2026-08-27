@@ -10,7 +10,7 @@ interface SiteFooterProps {
 
 export function SiteFooter({ categories, socialLinks }: SiteFooterProps) {
   return (
-    <footer className="bg-ink mt-16 text-white/80">
+    <footer className="bg-navy mt-16 text-white/80">
       <div id="subscribe" className="border-b border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-12 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
@@ -29,7 +29,7 @@ export function SiteFooter({ categories, socialLinks }: SiteFooterProps) {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-3">
         <div>
           <p className="font-serif text-xl font-bold text-white">
-            Handball Press <span className="text-crimson">GH</span>
+            Handball Press <span className="text-gold">GH</span>
           </p>
           <p className="mt-2 max-w-xs text-sm text-white/60">
             Play to the tune of development! Ghana handball news, match reports, interviews and

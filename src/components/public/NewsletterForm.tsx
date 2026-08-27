@@ -31,17 +31,17 @@ export function NewsletterForm({ className }: NewsletterFormProps) {
         type="email"
         required
         placeholder="you@example.com"
-        className="border-line bg-paper-raised text-ink placeholder:text-muted focus-visible:ring-crimson w-full min-w-0 rounded-sm border px-4 py-2.5 text-sm outline-none focus-visible:ring-2"
+        className="border-line bg-paper-raised text-ink placeholder:text-muted focus-visible:ring-gold w-full min-w-0 rounded-sm border px-4 py-2.5 text-sm outline-none focus-visible:ring-2"
       />
       <button
         type="submit"
         disabled={isPending}
-        className="bg-crimson hover:bg-crimson-dark shrink-0 rounded-sm px-5 py-2.5 text-sm font-semibold text-white transition-colors disabled:opacity-60"
+        className="bg-gold hover:bg-gold-dark text-navy shrink-0 rounded-sm px-5 py-2.5 text-sm font-bold transition-colors disabled:opacity-60"
       >
         {isPending ? 'Joining…' : 'Subscribe'}
       </button>
       {state.error && (
-        <p role="alert" className="text-crimson basis-full text-sm">
+        <p role="alert" className="basis-full text-sm text-red-200">
           {state.error}
         </p>
       )}
