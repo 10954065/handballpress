@@ -79,7 +79,15 @@ export function SiteFooter({ categories, socialLinks }: SiteFooterProps) {
       </div>
 
       <div className="border-t border-white/10 px-4 py-6 text-center text-xs text-white/60 sm:px-6">
-        © {new Date().getFullYear()} Handball Press GH. All rights reserved.
+        © {new Date().getFullYear()} Handball Press GH. All rights reserved. Created by{' '}
+        <a
+          href="https://sunleonrouterenterprise.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-white"
+        >
+          sunleonrouterenterprise.com
+        </a>
       </div>
     </footer>
   )
