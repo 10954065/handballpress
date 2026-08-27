@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { after } from 'next/server'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { db } from '@/lib/db'
@@ -91,6 +92,14 @@ export default async function ArticlePage({ params }: PageProps<'/news/[slug]'>)
   if (article.status !== 'PUBLISHED') {
     const user = await getCurrentUser()
     if (!user || !hasRole(user.role, UserRole.AUTHOR)) notFound()
+  } else {
+    // Only real public reads count toward Trending — staff previewing an
+    // unpublished draft above shouldn't inflate it. Fire-and-forget after
+    // the response is sent, same pattern as ad impression counting.
+    const articleId = article.id
+    after(() =>
+      db.article.update({ where: { id: articleId }, data: { viewCount: { increment: 1 } } })
+    )
   }
 
   const relatedArticles = await getRelatedArticles(article.categoryId, article.id)

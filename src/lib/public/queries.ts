@@ -25,7 +25,7 @@ export type ArticleCard = NonNullable<
 const publishedWhere = { status: ArticleStatus.PUBLISHED } as const
 
 export async function getHomepageFeed() {
-  const [hero, rest, categories, breakingNews] = await Promise.all([
+  const [hero, rest, breakingNews] = await Promise.all([
     db.article.findFirst({
       where: publishedWhere,
       orderBy: { publishedAt: 'desc' },
@@ -38,6 +38,24 @@ export async function getHomepageFeed() {
       take: 13,
       select: articleCardSelect,
     }),
+    getActiveBreakingNews(),
+  ])
+
+  const [secondary, latest] = [rest.slice(0, 4), rest.slice(4)]
+
+  // Everything already shown above the fold is excluded from Trending and
+  // the category rails below — without this, a thin content window (a
+  // handful of published articles in a given category) means the same
+  // story reappears three times on one homepage load.
+  const shownIds = [hero?.id, ...rest.map((a) => a.id)].filter((id): id is string => Boolean(id))
+
+  const [trending, categories] = await Promise.all([
+    db.article.findMany({
+      where: { ...publishedWhere, id: { notIn: shownIds }, viewCount: { gt: 0 } },
+      orderBy: { viewCount: 'desc' },
+      take: 5,
+      select: articleCardSelect,
+    }),
     db.category.findMany({
       orderBy: { name: 'asc' },
       select: {
@@ -45,20 +63,18 @@ export async function getHomepageFeed() {
         name: true,
         slug: true,
         articles: {
-          where: publishedWhere,
+          where: { ...publishedWhere, id: { notIn: shownIds } },
           orderBy: { publishedAt: 'desc' },
           take: 4,
           select: articleCardSelect,
         },
       },
     }),
-    getActiveBreakingNews(),
   ])
 
-  const [secondary, latest] = [rest.slice(0, 4), rest.slice(4)]
   const categoryRails = categories.filter((category) => category.articles.length > 0)
 
-  return { hero, secondary, latest, categoryRails, breakingNews }
+  return { hero, secondary, latest, categoryRails, trending, breakingNews }
 }
 
 export async function getActiveBreakingNews() {

@@ -6,6 +6,7 @@ import { JsonLd } from '@/components/public/JsonLd'
 import { buildWebsiteSchema } from '@/lib/structured-data'
 import { AdSlot } from '@/components/public/AdSlot'
 import { AdPlacement } from '@/generated/prisma/enums'
+import { TrendingList } from '@/components/public/TrendingList'
 
 export const metadata: Metadata = {
   description:
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 export const revalidate = 60
 
 export default async function HomePage() {
-  const { hero, secondary, latest, categoryRails } = await getHomepageFeed()
+  const { hero, secondary, latest, categoryRails, trending } = await getHomepageFeed()
 
   if (!hero) {
     return (
@@ -68,20 +69,29 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {categoryRails.slice(0, 1).map((category) => (
-          <aside key={category.id}>
-            <SectionHeading
-              title={category.name}
-              eyebrow="Section"
-              href={`/category/${category.slug}`}
-            />
-            <div className="flex flex-col gap-6">
-              {category.articles.map((article) => (
-                <ArticleCard key={article.id} article={article} variant="compact" />
-              ))}
+        <aside className="flex flex-col gap-12">
+          {trending.length > 0 && (
+            <div>
+              <SectionHeading title="Trending Now" eyebrow="Popular" />
+              <TrendingList articles={trending} />
             </div>
-          </aside>
-        ))}
+          )}
+
+          {categoryRails.slice(0, 1).map((category) => (
+            <div key={category.id}>
+              <SectionHeading
+                title={category.name}
+                eyebrow="Section"
+                href={`/category/${category.slug}`}
+              />
+              <div className="flex flex-col gap-6">
+                {category.articles.map((article) => (
+                  <ArticleCard key={article.id} article={article} variant="compact" />
+                ))}
+              </div>
+            </div>
+          ))}
+        </aside>
       </div>
 
       {categoryRails.slice(1).map((category) => (
