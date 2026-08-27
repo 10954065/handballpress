@@ -12,10 +12,10 @@ export default async function LoginPage() {
   if (user) redirect('/admin')
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-8 px-6">
+    <main className="bg-paper flex min-h-screen flex-col items-center justify-center gap-8 px-6">
       <div className="flex flex-col items-center gap-1 text-center">
-        <h1 className="text-xl font-bold tracking-tight">Handball Press GH</h1>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">Admin sign in</p>
+        <h1 className="text-ink font-serif text-2xl font-semibold">Handball Press GH</h1>
+        <p className="text-muted text-sm">Admin sign in</p>
       </div>
       <LoginForm />
     </main>

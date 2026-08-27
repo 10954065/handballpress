@@ -18,27 +18,35 @@ export default async function AuthorsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold tracking-tight">Authors</h1>
-      <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
+      <div>
+        <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">Taxonomy</p>
+        <h1 className="text-ink mt-1 font-serif text-3xl font-semibold">Authors</h1>
+      </div>
+      <div className="border-line bg-paper-raised rounded-sm border p-4">
         <AuthorForm />
       </div>
-      <div className="flex flex-col gap-3">
-        {authors.map((author) => (
-          <AuthorRow
-            key={author.id}
-            author={{
-              id: author.id,
-              name: author.name,
-              slug: author.slug,
-              bio: author.bio,
-              email: author.email,
-              photoUrl: author.photo?.url ?? null,
-              articleCount: author._count.articles,
-            }}
-          />
-        ))}
-      </div>
-      {authors.length === 0 && <p className="text-sm text-neutral-500">No authors yet.</p>}
+      {authors.length === 0 ? (
+        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
+          No authors yet.
+        </p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {authors.map((author) => (
+            <AuthorRow
+              key={author.id}
+              author={{
+                id: author.id,
+                name: author.name,
+                slug: author.slug,
+                bio: author.bio,
+                email: author.email,
+                photoUrl: author.photo?.url ?? null,
+                articleCount: author._count.articles,
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

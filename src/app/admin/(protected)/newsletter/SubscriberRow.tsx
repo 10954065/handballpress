@@ -20,22 +20,20 @@ export function SubscriberRow({ subscriber }: SubscriberRowProps) {
   const isSubscribed = subscriber.status === SubscriberStatus.SUBSCRIBED
 
   return (
-    <tr className="border-b border-neutral-100 dark:border-neutral-900">
-      <td className="py-2 pr-4">{subscriber.email}</td>
-      <td className="py-2 pr-4 text-neutral-500">{subscriber.source ?? '—'}</td>
-      <td className="py-2 pr-4 text-neutral-500">{formatDate(subscriber.subscribedAt)}</td>
-      <td className="py-2 pr-4">
+    <tr className="border-line border-b last:border-0">
+      <td className="px-4 py-3">{subscriber.email}</td>
+      <td className="text-ink-soft px-4 py-3">{subscriber.source ?? '—'}</td>
+      <td className="text-ink-soft px-4 py-3">{formatDate(subscriber.subscribedAt)}</td>
+      <td className="px-4 py-3">
         <span
-          className={`rounded px-2 py-0.5 text-xs font-medium ${
-            isSubscribed
-              ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300'
-              : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400'
+          className={`rounded-full px-2.5 py-1 text-xs font-bold tracking-wide uppercase ${
+            isSubscribed ? 'bg-success/10 text-success' : 'bg-ink/[0.06] text-muted'
           }`}
         >
           {subscriber.status}
         </span>
       </td>
-      <td className="py-2 text-right">
+      <td className="px-4 py-3 text-right">
         <button
           type="button"
           disabled={isPending}
@@ -47,7 +45,7 @@ export function SubscriberRow({ subscriber }: SubscriberRowProps) {
               )
             )
           }
-          className="text-xs underline underline-offset-2 disabled:opacity-60"
+          className="text-ink-soft hover:text-blue text-xs font-semibold disabled:opacity-60"
         >
           {isSubscribed ? 'Unsubscribe' : 'Resubscribe'}
         </button>

@@ -24,15 +24,15 @@ export function AuthorRow({ author }: AuthorRowProps) {
 
   if (isEditing) {
     return (
-      <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
+      <div className="border-line bg-paper-raised rounded-sm border p-4">
         <AuthorForm author={author} onDone={() => setIsEditing(false)} />
       </div>
     )
   }
 
   return (
-    <div className="flex items-center gap-4 rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
-      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-900">
+    <div className="border-line bg-paper-raised flex items-center gap-4 rounded-sm border p-4">
+      <div className="bg-ink/[0.06] relative h-12 w-12 shrink-0 overflow-hidden rounded-full">
         {author.photoUrl && (
           <Image
             src={author.photoUrl}
@@ -45,14 +45,14 @@ export function AuthorRow({ author }: AuthorRowProps) {
       </div>
       <div className="flex-1">
         <p className="font-medium">{author.name}</p>
-        <p className="text-xs text-neutral-500">
+        <p className="text-muted text-xs">
           /{author.slug} · {author.articleCount} article{author.articleCount === 1 ? '' : 's'}
         </p>
       </div>
       <button
         type="button"
         onClick={() => setIsEditing(true)}
-        className="text-xs underline underline-offset-2"
+        className="text-ink-soft hover:text-blue text-xs font-semibold"
       >
         Edit
       </button>
@@ -69,11 +69,11 @@ export function AuthorRow({ author }: AuthorRowProps) {
             }
           })
         }}
-        className="text-xs text-red-600 disabled:opacity-60 dark:text-red-400"
+        className="text-error text-xs font-semibold hover:underline disabled:opacity-60"
       >
         Delete
       </button>
-      {deleteError && <p className="text-xs text-red-600 dark:text-red-400">{deleteError}</p>}
+      {deleteError && <p className="text-error text-xs">{deleteError}</p>}
     </div>
   )
 }

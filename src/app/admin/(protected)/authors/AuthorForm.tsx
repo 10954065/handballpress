@@ -9,6 +9,9 @@ interface AuthorFormProps {
 }
 
 const initialState: AuthorActionState = {}
+const FIELD =
+  'border-line bg-paper-raised focus-visible:ring-blue rounded-sm border px-3 py-1.5 text-sm outline-none focus-visible:ring-2'
+const LABEL = 'text-ink text-sm font-semibold'
 
 export function AuthorForm({ author, onDone }: AuthorFormProps) {
   const formRef = useRef<HTMLFormElement>(null)
@@ -32,7 +35,7 @@ export function AuthorForm({ author, onDone }: AuthorFormProps) {
       {author && <input type="hidden" name="id" value={author.id} />}
       <div className="flex flex-wrap gap-3">
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium" htmlFor={fieldId('name')}>
+          <label className={LABEL} htmlFor={fieldId('name')}>
             Name
           </label>
           <input
@@ -40,11 +43,11 @@ export function AuthorForm({ author, onDone }: AuthorFormProps) {
             name="name"
             defaultValue={author?.name}
             required
-            className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm dark:border-neutral-700 dark:bg-transparent"
+            className={FIELD}
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium" htmlFor={fieldId('slug')}>
+          <label className={LABEL} htmlFor={fieldId('slug')}>
             Slug (optional)
           </label>
           <input
@@ -52,11 +55,11 @@ export function AuthorForm({ author, onDone }: AuthorFormProps) {
             name="slug"
             defaultValue={author?.slug}
             placeholder="auto from name"
-            className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm dark:border-neutral-700 dark:bg-transparent"
+            className={FIELD}
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium" htmlFor={fieldId('email')}>
+          <label className={LABEL} htmlFor={fieldId('email')}>
             Email
           </label>
           <input
@@ -64,11 +67,11 @@ export function AuthorForm({ author, onDone }: AuthorFormProps) {
             name="email"
             type="email"
             defaultValue={author?.email ?? ''}
-            className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm dark:border-neutral-700 dark:bg-transparent"
+            className={FIELD}
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium" htmlFor={fieldId('photo')}>
+          <label className={LABEL} htmlFor={fieldId('photo')}>
             Photo
           </label>
           <input
@@ -81,7 +84,7 @@ export function AuthorForm({ author, onDone }: AuthorFormProps) {
         </div>
       </div>
       <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-medium" htmlFor={fieldId('bio')}>
+        <label className={LABEL} htmlFor={fieldId('bio')}>
           Bio
         </label>
         <textarea
@@ -89,15 +92,15 @@ export function AuthorForm({ author, onDone }: AuthorFormProps) {
           name="bio"
           defaultValue={author?.bio ?? ''}
           rows={3}
-          className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm dark:border-neutral-700 dark:bg-transparent"
+          className={FIELD}
         />
       </div>
-      {state.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
+      {state.error && <p className="text-error text-sm">{state.error}</p>}
       <div>
         <button
           type="submit"
           disabled={isPending}
-          className="bg-foreground text-background rounded-md px-4 py-1.5 text-sm font-medium disabled:opacity-60"
+          className="bg-navy hover:bg-blue-dark rounded-sm px-4 py-2 text-sm font-bold text-white transition-colors disabled:opacity-60"
         >
           {isPending ? 'Saving…' : author ? 'Save' : 'Add author'}
         </button>

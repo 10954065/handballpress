@@ -18,19 +18,27 @@ export default async function TagsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold tracking-tight">Tags</h1>
-      <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
+      <div>
+        <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">Taxonomy</p>
+        <h1 className="text-ink mt-1 font-serif text-3xl font-semibold">Tags</h1>
+      </div>
+      <div className="border-line bg-paper-raised rounded-sm border p-4">
         <TagForm />
       </div>
-      <div className="flex flex-wrap gap-2">
-        {tags.map((tag) => (
-          <TagChip
-            key={tag.id}
-            tag={{ id: tag.id, name: tag.name, articleCount: tag._count.articles }}
-          />
-        ))}
-      </div>
-      {tags.length === 0 && <p className="text-sm text-neutral-500">No tags yet.</p>}
+      {tags.length === 0 ? (
+        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
+          No tags yet.
+        </p>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <TagChip
+              key={tag.id}
+              tag={{ id: tag.id, name: tag.name, articleCount: tag._count.articles }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

@@ -20,14 +20,17 @@ interface MediaItemProps {
 }
 
 const initialState: MediaActionState = {}
+const FIELD =
+  'border-line bg-paper-raised focus-visible:ring-blue rounded-sm border px-2 py-1.5 text-xs outline-none focus-visible:ring-2'
+const ACTION_BUTTON = 'text-ink-soft hover:text-blue text-xs font-semibold'
 
 export function MediaItem({ media, canDelete }: MediaItemProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [state, formAction, isPending] = useActionState(updateMediaMeta, initialState)
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-neutral-200 p-3 dark:border-neutral-800">
-      <div className="relative aspect-square overflow-hidden rounded-md bg-neutral-100 dark:bg-neutral-900">
+    <div className="border-line bg-paper-raised flex flex-col gap-2 rounded-sm border p-3">
+      <div className="bg-ink/[0.04] relative aspect-square overflow-hidden rounded-sm">
         <Image
           src={media.url}
           alt={media.altText ?? ''}
@@ -36,7 +39,7 @@ export function MediaItem({ media, canDelete }: MediaItemProps) {
           className="object-cover"
         />
       </div>
-      <p className="text-xs text-neutral-500">
+      <p className="text-muted text-xs">
         {media.width && media.height ? `${media.width}×${media.height} · ` : ''}
         {media.fileSizeBytes ? `${Math.round(media.fileSizeBytes / 1024)}KB` : ''}
       </p>
@@ -48,33 +51,29 @@ export function MediaItem({ media, canDelete }: MediaItemProps) {
             name="altText"
             defaultValue={media.altText ?? ''}
             placeholder="Alt text"
-            className="rounded-md border border-neutral-300 px-2 py-1 text-xs dark:border-neutral-700 dark:bg-transparent"
+            className={FIELD}
           />
           <input
             name="caption"
             defaultValue={media.caption ?? ''}
             placeholder="Caption"
-            className="rounded-md border border-neutral-300 px-2 py-1 text-xs dark:border-neutral-700 dark:bg-transparent"
+            className={FIELD}
           />
           <input
             name="credit"
             defaultValue={media.credit ?? ''}
             placeholder="Credit"
-            className="rounded-md border border-neutral-300 px-2 py-1 text-xs dark:border-neutral-700 dark:bg-transparent"
+            className={FIELD}
           />
-          {state.error && <p className="text-xs text-red-600 dark:text-red-400">{state.error}</p>}
-          <div className="flex gap-2">
-            <button
-              type="submit"
-              disabled={isPending}
-              className="text-xs font-medium underline underline-offset-2"
-            >
+          {state.error && <p className="text-error text-xs">{state.error}</p>}
+          <div className="flex gap-3">
+            <button type="submit" disabled={isPending} className={ACTION_BUTTON}>
               {isPending ? 'Saving…' : 'Save'}
             </button>
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="text-xs text-neutral-500"
+              className="text-muted text-xs"
             >
               Cancel
             </button>
@@ -82,16 +81,12 @@ export function MediaItem({ media, canDelete }: MediaItemProps) {
         </form>
       ) : (
         <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => setIsEditing(true)}
-            className="text-xs font-medium underline underline-offset-2"
-          >
+          <button type="button" onClick={() => setIsEditing(true)} className={ACTION_BUTTON}>
             Edit
           </button>
           {canDelete && (
             <form action={deleteMedia.bind(null, media.id)}>
-              <button type="submit" className="text-xs text-red-600 dark:text-red-400">
+              <button type="submit" className="text-error text-xs font-semibold hover:underline">
                 Delete
               </button>
             </form>

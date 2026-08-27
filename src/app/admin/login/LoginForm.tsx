@@ -4,6 +4,8 @@ import { useActionState } from 'react'
 import { login, type LoginActionState } from '@/lib/auth/actions'
 
 const initialState: LoginActionState = {}
+const FIELD =
+  'border-line bg-paper-raised focus-visible:ring-blue rounded-sm border px-3 py-2 text-sm outline-none focus-visible:ring-2'
 
 export function LoginForm() {
   const [state, formAction, isPending] = useActionState(login, initialState)
@@ -11,7 +13,7 @@ export function LoginForm() {
   return (
     <form action={formAction} className="flex w-full max-w-sm flex-col gap-4">
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-sm font-medium">
+        <label htmlFor="email" className="text-ink text-sm font-semibold">
           Email
         </label>
         <input
@@ -20,11 +22,11 @@ export function LoginForm() {
           type="email"
           autoComplete="email"
           required
-          className="bg-background rounded-md border border-neutral-300 px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:border-neutral-700"
+          className={FIELD}
         />
       </div>
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="password" className="text-sm font-medium">
+        <label htmlFor="password" className="text-ink text-sm font-semibold">
           Password
         </label>
         <input
@@ -33,18 +35,18 @@ export function LoginForm() {
           type="password"
           autoComplete="current-password"
           required
-          className="bg-background rounded-md border border-neutral-300 px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 dark:border-neutral-700"
+          className={FIELD}
         />
       </div>
       {state.error && (
-        <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+        <p role="alert" className="text-error text-sm">
           {state.error}
         </p>
       )}
       <button
         type="submit"
         disabled={isPending}
-        className="bg-foreground text-background rounded-md px-4 py-2 text-sm font-medium disabled:opacity-60"
+        className="bg-navy hover:bg-blue-dark rounded-sm px-4 py-2.5 text-sm font-bold text-white transition-colors disabled:opacity-60"
       >
         {isPending ? 'Signing in…' : 'Sign in'}
       </button>

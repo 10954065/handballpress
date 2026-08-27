@@ -23,8 +23,9 @@ export default async function NewsletterPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Newsletter</h1>
-        <p className="mt-1 text-sm text-neutral-500">
+        <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">Growth</p>
+        <h1 className="text-ink mt-1 font-serif text-3xl font-semibold">Newsletter</h1>
+        <p className="text-muted mt-2 max-w-2xl text-sm">
           Sign-ups are captured from the site&apos;s footer form. Sending campaigns isn&apos;t wired
           up yet — see RESEND_API_KEY in the environment for the email provider this is built
           against.
@@ -32,37 +33,42 @@ export default async function NewsletterPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
-          <p className="text-xs tracking-wide text-neutral-500 uppercase">Subscribed</p>
-          <p className="mt-1 text-2xl font-semibold">{subscribedCount}</p>
+        <div className="border-line bg-paper-raised rounded-sm border p-4">
+          <p className="text-muted text-xs font-medium tracking-wide uppercase">Subscribed</p>
+          <p className="text-ink mt-1 text-2xl font-bold tabular-nums">{subscribedCount}</p>
         </div>
-        <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
-          <p className="text-xs tracking-wide text-neutral-500 uppercase">Unsubscribed</p>
-          <p className="mt-1 text-2xl font-semibold">{unsubscribedCount}</p>
+        <div className="border-line bg-paper-raised rounded-sm border p-4">
+          <p className="text-muted text-xs font-medium tracking-wide uppercase">Unsubscribed</p>
+          <p className="text-ink mt-1 text-2xl font-bold tabular-nums">{unsubscribedCount}</p>
         </div>
       </div>
 
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-neutral-200 text-left text-xs text-neutral-500 uppercase dark:border-neutral-800">
-            <th className="pb-2 font-medium">Email</th>
-            <th className="pb-2 font-medium">Source</th>
-            <th className="pb-2 font-medium">Since</th>
-            <th className="pb-2 font-medium">Status</th>
-            <th className="pb-2 font-medium" />
-          </tr>
-        </thead>
-        <tbody>
-          {subscribers.map((subscriber) => (
-            <SubscriberRow key={subscriber.id} subscriber={subscriber} />
-          ))}
-        </tbody>
-      </table>
-      {subscribers.length === 0 && <p className="text-sm text-neutral-500">No subscribers yet.</p>}
-      {subscribers.length === SUBSCRIBER_DISPLAY_LIMIT && (
-        <p className="text-xs text-neutral-500">
-          Showing the most recent {SUBSCRIBER_DISPLAY_LIMIT}.
+      {subscribers.length === 0 ? (
+        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
+          No subscribers yet.
         </p>
+      ) : (
+        <div className="border-line bg-paper-raised overflow-x-auto rounded-sm border">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-line text-muted border-b text-left text-xs uppercase">
+                <th className="px-4 py-3 font-semibold">Email</th>
+                <th className="px-4 py-3 font-semibold">Source</th>
+                <th className="px-4 py-3 font-semibold">Since</th>
+                <th className="px-4 py-3 font-semibold">Status</th>
+                <th className="px-4 py-3 font-semibold" />
+              </tr>
+            </thead>
+            <tbody>
+              {subscribers.map((subscriber) => (
+                <SubscriberRow key={subscriber.id} subscriber={subscriber} />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {subscribers.length === SUBSCRIBER_DISPLAY_LIMIT && (
+        <p className="text-muted text-xs">Showing the most recent {SUBSCRIBER_DISPLAY_LIMIT}.</p>
       )}
     </div>
   )

@@ -18,29 +18,39 @@ export default async function CategoriesPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold tracking-tight">Categories</h1>
-      <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
+      <div>
+        <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">Taxonomy</p>
+        <h1 className="text-ink mt-1 font-serif text-3xl font-semibold">Categories</h1>
+      </div>
+      <div className="border-line bg-paper-raised rounded-sm border p-4">
         <CategoryForm />
       </div>
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-neutral-200 text-left text-xs text-neutral-500 uppercase dark:border-neutral-800">
-            <th className="pb-2 font-medium">Name</th>
-            <th className="pb-2 font-medium">Slug</th>
-            <th className="pb-2 font-medium">Articles</th>
-            <th className="pb-2 font-medium" />
-          </tr>
-        </thead>
-        <tbody>
-          {categories.map((category) => (
-            <CategoryRow
-              key={category.id}
-              category={{ ...category, articleCount: category._count.articles }}
-            />
-          ))}
-        </tbody>
-      </table>
-      {categories.length === 0 && <p className="text-sm text-neutral-500">No categories yet.</p>}
+      {categories.length === 0 ? (
+        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
+          No categories yet.
+        </p>
+      ) : (
+        <div className="border-line bg-paper-raised overflow-x-auto rounded-sm border">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-line text-muted border-b text-left text-xs uppercase">
+                <th className="px-4 py-3 font-semibold">Name</th>
+                <th className="px-4 py-3 font-semibold">Slug</th>
+                <th className="px-4 py-3 font-semibold">Articles</th>
+                <th className="px-4 py-3 font-semibold" />
+              </tr>
+            </thead>
+            <tbody>
+              {categories.map((category) => (
+                <CategoryRow
+                  key={category.id}
+                  category={{ ...category, articleCount: category._count.articles }}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }

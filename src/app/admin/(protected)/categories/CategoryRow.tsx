@@ -30,40 +30,40 @@ export function CategoryRow({ category }: CategoryRowProps) {
   }
 
   return (
-    <tr className="border-b border-neutral-100 dark:border-neutral-900">
-      <td className="py-2 pr-4 font-medium">{category.name}</td>
-      <td className="py-2 pr-4 text-neutral-500">/{category.slug}</td>
-      <td className="py-2 pr-4 text-neutral-500">{category.articleCount}</td>
-      <td className="py-2 text-right">
-        <button
-          type="button"
-          onClick={() => setIsEditing(true)}
-          className="mr-3 text-xs underline underline-offset-2"
-        >
-          Edit
-        </button>
-        <button
-          type="button"
-          disabled={isDeleting}
-          onClick={() => {
-            setDeleteError(null)
-            startDelete(async () => {
-              try {
-                await deleteCategory(category.id)
-              } catch (error) {
-                setDeleteError(
-                  error instanceof Error ? error.message : 'Could not delete category.'
-                )
-              }
-            })
-          }}
-          className="text-xs text-red-600 disabled:opacity-60 dark:text-red-400"
-        >
-          Delete
-        </button>
-        {deleteError && (
-          <p className="mt-1 text-xs text-red-600 dark:text-red-400">{deleteError}</p>
-        )}
+    <tr className="border-line border-b last:border-0">
+      <td className="px-4 py-3 font-medium">{category.name}</td>
+      <td className="text-muted px-4 py-3">/{category.slug}</td>
+      <td className="text-ink-soft px-4 py-3">{category.articleCount}</td>
+      <td className="px-4 py-3 text-right whitespace-nowrap">
+        <div className="flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={() => setIsEditing(true)}
+            className="text-ink-soft hover:text-blue text-xs font-semibold"
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            disabled={isDeleting}
+            onClick={() => {
+              setDeleteError(null)
+              startDelete(async () => {
+                try {
+                  await deleteCategory(category.id)
+                } catch (error) {
+                  setDeleteError(
+                    error instanceof Error ? error.message : 'Could not delete category.'
+                  )
+                }
+              })
+            }}
+            className="text-error text-xs font-semibold hover:underline disabled:opacity-60"
+          >
+            Delete
+          </button>
+        </div>
+        {deleteError && <p className="text-error mt-1 text-xs">{deleteError}</p>}
       </td>
     </tr>
   )

@@ -47,7 +47,7 @@ export function AdvertisementForm({ advertisement, onDone }: AdvertisementFormPr
 
   const idSuffix = advertisement?.id ?? 'new'
   const inputClass =
-    'rounded-md border border-neutral-300 px-3 py-1.5 text-sm dark:border-neutral-700 dark:bg-transparent'
+    'border-line bg-paper-raised focus-visible:ring-blue rounded-sm border px-3 py-1.5 text-sm outline-none focus-visible:ring-2'
 
   return (
     <form ref={formRef} action={formAction} className="flex flex-col gap-3">
@@ -55,7 +55,7 @@ export function AdvertisementForm({ advertisement, onDone }: AdvertisementFormPr
 
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium" htmlFor={`name-${idSuffix}`}>
+          <label className="text-ink text-sm font-semibold" htmlFor={`name-${idSuffix}`}>
             Name
           </label>
           <input
@@ -67,7 +67,7 @@ export function AdvertisementForm({ advertisement, onDone }: AdvertisementFormPr
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium" htmlFor={`placement-${idSuffix}`}>
+          <label className="text-ink text-sm font-semibold" htmlFor={`placement-${idSuffix}`}>
             Placement
           </label>
           <select
@@ -86,7 +86,7 @@ export function AdvertisementForm({ advertisement, onDone }: AdvertisementFormPr
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-medium" htmlFor={`imageUrl-${idSuffix}`}>
+        <label className="text-ink text-sm font-semibold" htmlFor={`imageUrl-${idSuffix}`}>
           Image URL
         </label>
         <input
@@ -99,7 +99,7 @@ export function AdvertisementForm({ advertisement, onDone }: AdvertisementFormPr
         />
       </div>
       <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-medium" htmlFor={`linkUrl-${idSuffix}`}>
+        <label className="text-ink text-sm font-semibold" htmlFor={`linkUrl-${idSuffix}`}>
           Link URL (where a click goes)
         </label>
         <input
@@ -112,7 +112,7 @@ export function AdvertisementForm({ advertisement, onDone }: AdvertisementFormPr
         />
       </div>
       <div className="flex flex-col gap-1.5">
-        <label className="text-sm font-medium" htmlFor={`embedHtml-${idSuffix}`}>
+        <label className="text-ink text-sm font-semibold" htmlFor={`embedHtml-${idSuffix}`}>
           Embed HTML (advanced — admin-only, renders as raw HTML)
         </label>
         <textarea
@@ -127,7 +127,7 @@ export function AdvertisementForm({ advertisement, onDone }: AdvertisementFormPr
 
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium" htmlFor={`startDate-${idSuffix}`}>
+          <label className="text-ink text-sm font-semibold" htmlFor={`startDate-${idSuffix}`}>
             Start
           </label>
           <input
@@ -140,7 +140,7 @@ export function AdvertisementForm({ advertisement, onDone }: AdvertisementFormPr
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium" htmlFor={`endDate-${idSuffix}`}>
+          <label className="text-ink text-sm font-semibold" htmlFor={`endDate-${idSuffix}`}>
             End
           </label>
           <input
@@ -159,16 +159,16 @@ export function AdvertisementForm({ advertisement, onDone }: AdvertisementFormPr
           type="checkbox"
           name="isActive"
           defaultChecked={advertisement?.isActive ?? true}
-          className="size-4"
+          className="accent-blue size-4"
         />
         Active
       </label>
 
-      {state.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
+      {state.error && <p className="text-error text-sm">{state.error}</p>}
       <button
         type="submit"
         disabled={isPending}
-        className="bg-foreground text-background w-fit rounded-md px-4 py-1.5 text-sm font-medium disabled:opacity-60"
+        className="bg-navy hover:bg-blue-dark w-fit rounded-sm px-4 py-2 text-sm font-bold text-white transition-colors disabled:opacity-60"
       >
         {isPending ? 'Saving…' : advertisement ? 'Save' : 'Add advertisement'}
       </button>

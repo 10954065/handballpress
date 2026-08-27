@@ -16,18 +16,26 @@ export default async function MediaLibraryPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold tracking-tight">Media Library</h1>
-      <UploadForm />
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {media.map((item) => (
-          <MediaItem
-            key={item.id}
-            media={{ ...item, createdAt: item.createdAt.toISOString() }}
-            canDelete={hasRole(user.role, UserRole.EDITOR)}
-          />
-        ))}
+      <div>
+        <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">Content</p>
+        <h1 className="text-ink mt-1 font-serif text-3xl font-semibold">Media Library</h1>
       </div>
-      {media.length === 0 && <p className="text-sm text-neutral-500">No media uploaded yet.</p>}
+      <UploadForm />
+      {media.length === 0 ? (
+        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
+          No media uploaded yet.
+        </p>
+      ) : (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          {media.map((item) => (
+            <MediaItem
+              key={item.id}
+              media={{ ...item, createdAt: item.createdAt.toISOString() }}
+              canDelete={hasRole(user.role, UserRole.EDITOR)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

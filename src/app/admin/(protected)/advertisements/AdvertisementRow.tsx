@@ -42,17 +42,17 @@ export function AdvertisementRow({ advertisement }: AdvertisementRowProps) {
   const isScheduled = advertisement.startDate > now
 
   return (
-    <tr className="border-b border-neutral-100 dark:border-neutral-900">
-      <td className="py-2 pr-4 font-medium">{advertisement.name}</td>
-      <td className="py-2 pr-4 text-neutral-500">{advertisement.placement.replaceAll('_', ' ')}</td>
-      <td className="py-2 pr-4 text-neutral-500">
+    <tr className="border-line border-b last:border-0">
+      <td className="px-4 py-3 font-medium">{advertisement.name}</td>
+      <td className="text-ink-soft px-4 py-3">{advertisement.placement.replaceAll('_', ' ')}</td>
+      <td className="text-ink-soft px-4 py-3">
         {formatDate(advertisement.startDate)} – {formatDate(advertisement.endDate)}
-        {isExpired && <span className="ml-1 text-red-500">(expired)</span>}
-        {isScheduled && <span className="ml-1 text-blue-500">(scheduled)</span>}
+        {isExpired && <span className="text-error ml-1">(expired)</span>}
+        {isScheduled && <span className="text-blue ml-1">(scheduled)</span>}
       </td>
-      <td className="py-2 pr-4 text-neutral-500">{advertisement.impressions}</td>
-      <td className="py-2 pr-4 text-neutral-500">{advertisement.clicks}</td>
-      <td className="py-2 pr-4">
+      <td className="text-ink-soft px-4 py-3">{advertisement.impressions}</td>
+      <td className="text-ink-soft px-4 py-3">{advertisement.clicks}</td>
+      <td className="px-4 py-3">
         <button
           type="button"
           disabled={isPending}
@@ -66,41 +66,41 @@ export function AdvertisementRow({ advertisement }: AdvertisementRowProps) {
               }
             })
           }
-          className={`rounded px-2 py-0.5 text-xs font-medium ${
-            advertisement.isActive
-              ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300'
-              : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400'
+          className={`rounded-full px-2.5 py-1 text-xs font-bold tracking-wide uppercase ${
+            advertisement.isActive ? 'bg-success/10 text-success' : 'bg-ink/[0.06] text-muted'
           }`}
         >
           {advertisement.isActive ? 'Active' : 'Paused'}
         </button>
       </td>
-      <td className="py-2 text-right">
-        <button
-          type="button"
-          onClick={() => setIsEditing(true)}
-          className="mr-3 text-xs underline underline-offset-2"
-        >
-          Edit
-        </button>
-        <button
-          type="button"
-          disabled={isPending}
-          onClick={() =>
-            startTransition(async () => {
-              setError(null)
-              try {
-                await deleteAdvertisement(advertisement.id)
-              } catch (err) {
-                setError(err instanceof Error ? err.message : 'Could not delete.')
-              }
-            })
-          }
-          className="text-xs text-red-600 disabled:opacity-60 dark:text-red-400"
-        >
-          Delete
-        </button>
-        {error && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{error}</p>}
+      <td className="px-4 py-3 text-right whitespace-nowrap">
+        <div className="flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={() => setIsEditing(true)}
+            className="text-ink-soft hover:text-blue text-xs font-semibold"
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            disabled={isPending}
+            onClick={() =>
+              startTransition(async () => {
+                setError(null)
+                try {
+                  await deleteAdvertisement(advertisement.id)
+                } catch (err) {
+                  setError(err instanceof Error ? err.message : 'Could not delete.')
+                }
+              })
+            }
+            className="text-error text-xs font-semibold hover:underline disabled:opacity-60"
+          >
+            Delete
+          </button>
+        </div>
+        {error && <p className="text-error mt-1 text-xs">{error}</p>}
       </td>
     </tr>
   )

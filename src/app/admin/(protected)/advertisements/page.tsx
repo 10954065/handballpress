@@ -13,30 +13,38 @@ export default async function AdvertisementsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold tracking-tight">Advertisements</h1>
-      <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
+      <div>
+        <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">Growth</p>
+        <h1 className="text-ink mt-1 font-serif text-3xl font-semibold">Advertisements</h1>
+      </div>
+      <div className="border-line bg-paper-raised rounded-sm border p-4">
         <AdvertisementForm />
       </div>
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-neutral-200 text-left text-xs text-neutral-500 uppercase dark:border-neutral-800">
-            <th className="pb-2 font-medium">Name</th>
-            <th className="pb-2 font-medium">Placement</th>
-            <th className="pb-2 font-medium">Runs</th>
-            <th className="pb-2 font-medium">Views</th>
-            <th className="pb-2 font-medium">Clicks</th>
-            <th className="pb-2 font-medium">Status</th>
-            <th className="pb-2 font-medium" />
-          </tr>
-        </thead>
-        <tbody>
-          {advertisements.map((advertisement) => (
-            <AdvertisementRow key={advertisement.id} advertisement={advertisement} />
-          ))}
-        </tbody>
-      </table>
-      {advertisements.length === 0 && (
-        <p className="text-sm text-neutral-500">No advertisements yet.</p>
+      {advertisements.length === 0 ? (
+        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
+          No advertisements yet.
+        </p>
+      ) : (
+        <div className="border-line bg-paper-raised overflow-x-auto rounded-sm border">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-line text-muted border-b text-left text-xs uppercase">
+                <th className="px-4 py-3 font-semibold">Name</th>
+                <th className="px-4 py-3 font-semibold">Placement</th>
+                <th className="px-4 py-3 font-semibold">Runs</th>
+                <th className="px-4 py-3 font-semibold">Views</th>
+                <th className="px-4 py-3 font-semibold">Clicks</th>
+                <th className="px-4 py-3 font-semibold">Status</th>
+                <th className="px-4 py-3 font-semibold" />
+              </tr>
+            </thead>
+            <tbody>
+              {advertisements.map((advertisement) => (
+                <AdvertisementRow key={advertisement.id} advertisement={advertisement} />
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )

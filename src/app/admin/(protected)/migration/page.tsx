@@ -6,9 +6,9 @@ import { db } from '@/lib/db'
 export const metadata: Metadata = { title: 'WordPress Migration' }
 
 const STATUS_STYLES: Record<string, string> = {
-  SUCCESS: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
-  SKIPPED: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300',
-  FAILED: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300',
+  SUCCESS: 'bg-success/10 text-success',
+  SKIPPED: 'bg-gold-tint text-gold-dark',
+  FAILED: 'bg-error/10 text-error',
 }
 
 export default async function MigrationReportPage() {
@@ -29,10 +29,11 @@ export default async function MigrationReportPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">WordPress Migration</h1>
-        <p className="mt-1 text-sm text-neutral-500">
+        <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">System</p>
+        <h1 className="text-ink mt-1 font-serif text-3xl font-semibold">WordPress Migration</h1>
+        <p className="text-muted mt-2 max-w-2xl text-sm">
           Results from the last run of{' '}
-          <code className="rounded bg-neutral-100 px-1 py-0.5 dark:bg-neutral-800">
+          <code className="bg-ink/[0.06] rounded-sm px-1 py-0.5">
             npx tsx scripts/wordpress-migration/migrate.ts
           </code>
           . Safe to rerun at any time — every post is matched by its WordPress ID, so a rerun
@@ -41,71 +42,70 @@ export default async function MigrationReportPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
-          <p className="text-xs tracking-wide text-neutral-500 uppercase">Total records</p>
-          <p className="mt-1 text-2xl font-semibold">{total}</p>
+        <div className="border-line bg-paper-raised rounded-sm border p-4">
+          <p className="text-muted text-xs font-medium tracking-wide uppercase">Total records</p>
+          <p className="text-ink mt-1 text-2xl font-bold tabular-nums">{total}</p>
         </div>
         {(['SUCCESS', 'SKIPPED', 'FAILED'] as const).map((status) => (
-          <div
-            key={status}
-            className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800"
-          >
-            <p className="text-xs tracking-wide text-neutral-500 uppercase">{status}</p>
-            <p className="mt-1 text-2xl font-semibold">{countByStatus[status] ?? 0}</p>
+          <div key={status} className="border-line bg-paper-raised rounded-sm border p-4">
+            <p className="text-muted text-xs font-medium tracking-wide uppercase">{status}</p>
+            <p className="text-ink mt-1 text-2xl font-bold tabular-nums">
+              {countByStatus[status] ?? 0}
+            </p>
           </div>
         ))}
       </div>
 
       {total === 0 && (
-        <p className="rounded-lg border border-dashed border-neutral-300 px-6 py-10 text-center text-sm text-neutral-500 dark:border-neutral-700">
+        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-10 text-center text-sm">
           No migration has been run yet.
         </p>
       )}
 
       {problemRecords.length > 0 && (
         <div>
-          <h2 className="mb-3 text-sm font-semibold tracking-wide text-neutral-500 uppercase">
+          <h2 className="text-muted mb-3 text-sm font-semibold tracking-wide uppercase">
             Skipped or failed ({problemRecords.length})
           </h2>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-neutral-200 text-left text-xs text-neutral-500 uppercase dark:border-neutral-800">
-                <th className="pb-2 font-medium">Status</th>
-                <th className="pb-2 font-medium">Source</th>
-                <th className="pb-2 font-medium">Reason</th>
-              </tr>
-            </thead>
-            <tbody>
-              {problemRecords.map((record) => (
-                <tr key={record.id} className="border-b border-neutral-100 dark:border-neutral-900">
-                  <td className="py-2 pr-4">
-                    <span
-                      className={`rounded px-2 py-0.5 text-xs font-medium ${STATUS_STYLES[record.status] ?? ''}`}
-                    >
-                      {record.status}
-                    </span>
-                  </td>
-                  <td className="py-2 pr-4">
-                    {record.sourceUrl ? (
-                      <a
-                        href={record.sourceUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline dark:text-blue-400"
-                      >
-                        {record.sourceUrl}
-                      </a>
-                    ) : (
-                      <span className="text-neutral-400">—</span>
-                    )}
-                  </td>
-                  <td className="py-2 text-neutral-600 dark:text-neutral-400">
-                    {record.errorMessage ?? '—'}
-                  </td>
+          <div className="border-line bg-paper-raised overflow-x-auto rounded-sm border">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-line text-muted border-b text-left text-xs uppercase">
+                  <th className="px-4 py-3 font-semibold">Status</th>
+                  <th className="px-4 py-3 font-semibold">Source</th>
+                  <th className="px-4 py-3 font-semibold">Reason</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {problemRecords.map((record) => (
+                  <tr key={record.id} className="border-line border-b last:border-0">
+                    <td className="px-4 py-3">
+                      <span
+                        className={`rounded-full px-2.5 py-1 text-xs font-bold tracking-wide uppercase ${STATUS_STYLES[record.status] ?? ''}`}
+                      >
+                        {record.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      {record.sourceUrl ? (
+                        <a
+                          href={record.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue hover:underline"
+                        >
+                          {record.sourceUrl}
+                        </a>
+                      ) : (
+                        <span className="text-faint">—</span>
+                      )}
+                    </td>
+                    <td className="text-ink-soft px-4 py-3">{record.errorMessage ?? '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

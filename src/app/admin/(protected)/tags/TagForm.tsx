@@ -19,21 +19,21 @@ export function TagForm() {
   return (
     <form ref={formRef} action={formAction} className="flex flex-wrap items-end gap-3">
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="tag-name" className="text-sm font-medium">
+        <label htmlFor="tag-name" className="text-ink text-sm font-semibold">
           Tag name
         </label>
         <input
           id="tag-name"
           name="name"
           required
-          className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm dark:border-neutral-700 dark:bg-transparent"
+          className="border-line bg-paper-raised focus-visible:ring-blue rounded-sm border px-3 py-1.5 text-sm outline-none focus-visible:ring-2"
         />
       </div>
-      {state.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
+      {state.error && <p className="text-error text-sm">{state.error}</p>}
       <button
         type="submit"
         disabled={isPending}
-        className="bg-foreground text-background rounded-md px-4 py-1.5 text-sm font-medium disabled:opacity-60"
+        className="bg-navy hover:bg-blue-dark rounded-sm px-4 py-2 text-sm font-bold text-white transition-colors disabled:opacity-60"
       >
         {isPending ? 'Adding…' : 'Add tag'}
       </button>
