@@ -5,6 +5,11 @@ import { formatMonthYear } from '@/lib/format'
 
 export const metadata: Metadata = { title: 'Archive' }
 
+// See page.tsx (homepage) for why this is needed — no dynamic API usage
+// here means Next would otherwise prerender this once at build time and
+// never pick up newly published months.
+export const revalidate = 60
+
 export default async function ArchivePage() {
   const months = await getArchiveMonths()
 

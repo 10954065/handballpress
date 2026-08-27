@@ -8,6 +8,13 @@ export const metadata: Metadata = {
     'Play to the tune of development! Ghana handball news, match reports, interviews and features.',
 }
 
+// Without this, Next prerenders the homepage once at build time (this page
+// has no dynamic API usage — a plain Prisma call doesn't opt a route into
+// dynamic rendering the way cookies()/headers() do) and never regenerates
+// it, so newly published articles would never appear without a full
+// redeploy. ISR keeps it fast while staying fresh within a minute.
+export const revalidate = 60
+
 export default async function HomePage() {
   const { hero, secondary, latest, categoryRails } = await getHomepageFeed()
 

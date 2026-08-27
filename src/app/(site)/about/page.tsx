@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   description: 'What Handball Press GH covers, and why.',
 }
 
+// See (site)/page.tsx for why — this page also queries the DB (social
+// links) with no dynamic API usage, so it would otherwise be frozen at
+// build time and never reflect a newly added/removed social link.
+export const revalidate = 60
+
 export default async function AboutPage() {
   const socialLinks = await getActiveSocialLinks()
 

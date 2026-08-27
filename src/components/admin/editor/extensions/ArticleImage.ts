@@ -33,7 +33,31 @@ export const ArticleImage = Node.create({
   },
 
   parseHTML() {
-    return [{ tag: 'figure[data-type="article-image"]' }]
+    return [
+      {
+        tag: 'figure[data-type="article-image"]',
+        // Without an explicit getAttrs, ProseMirror recognizes the node but
+        // leaves every attribute at its default — fine for round-tripping
+        // content this editor produced itself (contentJson is canonical,
+        // this HTML is a one-way derivation), but it means pasting such a
+        // figure (or parsing imported HTML via generateJSON, as the
+        // WordPress migration does) silently drops the image entirely.
+        getAttrs: (element) => {
+          if (!(element instanceof HTMLElement)) return false
+          const img = element.querySelector('img')
+          const align = IMAGE_ALIGNMENTS.find((value) =>
+            element.classList.contains(`align-${value}`)
+          )
+          return {
+            src: img?.getAttribute('src') ?? null,
+            alt: img?.getAttribute('alt') || null,
+            caption: element.querySelector('figcaption .caption')?.textContent || null,
+            credit: element.querySelector('figcaption .credit')?.textContent || null,
+            align: align ?? 'center',
+          }
+        },
+      },
+    ]
   },
 
   renderHTML({ HTMLAttributes }) {

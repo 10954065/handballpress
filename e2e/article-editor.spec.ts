@@ -50,6 +50,12 @@ test.describe('article editor', () => {
   })
 
   test('can create a full article with an inline image and publish it', async ({ page }) => {
+    // Generous timeout: the New Article form now renders a checkbox per
+    // real tag (175+ post-migration), which measurably slows both initial
+    // hydration and the submit round-trip compared to the near-empty DB
+    // this test was originally written against.
+    test.setTimeout(60_000)
+
     // Seed a category/author/tag to select in the form.
     await page.goto('/admin/categories')
     await page.getByLabel('Name').fill(CATEGORY_NAME)
@@ -85,14 +91,14 @@ test.describe('article editor', () => {
     await expect(page.locator('.article-image-node img')).toBeVisible({ timeout: 15_000 })
     await page.locator('.article-image-node figcaption input').first().fill(IMAGE_CAPTION)
 
-    await page.getByLabel('Category').selectOption({ label: CATEGORY_NAME })
-    await page.getByLabel('Author').selectOption({ label: AUTHOR_NAME })
+    await page.getByLabel('Category', { exact: true }).selectOption({ label: CATEGORY_NAME })
+    await page.getByLabel('Author', { exact: true }).selectOption({ label: AUTHOR_NAME })
     await page.getByLabel(TAG_NAME).check()
 
     await page.getByLabel('Publish now').check()
     await page.getByRole('button', { name: 'Create article' }).click()
 
-    await expect(page).toHaveURL(/\/admin\/articles$/)
+    await expect(page).toHaveURL(/\/admin\/articles$/, { timeout: 15_000 })
     await expect(page.getByText(ARTICLE_TITLE)).toBeVisible()
 
     // Follow through to the public page and confirm the sanitized content

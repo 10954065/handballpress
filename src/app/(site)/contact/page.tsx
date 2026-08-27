@@ -5,6 +5,9 @@ import { CONTACT_EMAIL } from '@/lib/site-config'
 
 export const metadata: Metadata = { title: 'Contact' }
 
+// See (site)/page.tsx for why — same reasoning as the About page.
+export const revalidate = 60
+
 export default async function ContactPage() {
   const socialLinks = await getActiveSocialLinks()
 

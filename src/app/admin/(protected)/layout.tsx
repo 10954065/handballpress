@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { href: '/admin/categories', label: 'Categories' },
   { href: '/admin/tags', label: 'Tags' },
   { href: '/admin/authors', label: 'Authors' },
+  { href: '/admin/migration', label: 'Migration' },
 ]
 
 export default async function AdminLayout({ children }: LayoutProps<'/admin'>) {
