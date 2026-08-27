@@ -6,6 +6,8 @@ import type { JSONContent } from '@tiptap/react'
 import { RichTextEditor } from '@/components/admin/editor/RichTextEditor'
 import { createArticle, updateArticle, type ArticleActionState } from '@/lib/articles/actions'
 import { FeaturedImagePicker } from './FeaturedImagePicker'
+import { TagPicker } from './TagPicker'
+import { SeoPreview } from './SeoPreview'
 
 interface Option {
   id: string
@@ -46,6 +48,12 @@ interface ArticleFormProps {
 const EMPTY_DOC: JSONContent = { type: 'doc', content: [{ type: 'paragraph' }] }
 const initialState: ArticleActionState = {}
 
+const FIELD =
+  'border-line bg-paper-raised focus-visible:ring-blue w-full rounded-sm border px-3 py-2 text-sm outline-none focus-visible:ring-2'
+const LABEL = 'text-ink text-sm font-semibold'
+const PANEL = 'border-line bg-paper-raised rounded-sm border p-4'
+const PANEL_TITLE = 'text-gold-dark mb-3 text-xs font-bold tracking-[0.14em] uppercase'
+
 function toDatetimeLocal(value: string | null): string {
   if (!value) return ''
   return value.slice(0, 16)
@@ -67,6 +75,14 @@ export function ArticleForm({
     article?.status === 'PUBLISHED' ? 'now' : article?.status === 'SCHEDULED' ? 'schedule' : 'draft'
   )
 
+  const [title, setTitle] = useState(article?.title ?? '')
+  const [slug, setSlug] = useState(article?.slug ?? '')
+  const [excerpt, setExcerpt] = useState(article?.excerpt ?? '')
+  const [seoTitle, setSeoTitle] = useState(article?.seoTitle ?? '')
+  const [seoDescription, setSeoDescription] = useState(article?.seoDescription ?? '')
+
+  const featuredImageUrl = media.find((item) => item.id === featuredImageId)?.url ?? null
+
   const [state, formAction, isPending] = useActionState(
     async (prevState: ArticleActionState, formData: FormData) => {
       const result = await action(prevState, formData)
@@ -77,219 +93,237 @@ export function ArticleForm({
   )
 
   return (
-    <form action={formAction} className="flex flex-col gap-6">
+    <form
+      action={formAction}
+      className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px] lg:items-start"
+    >
       {article && <input type="hidden" name="id" value={article.id} />}
       <input type="hidden" name="contentJson" value={JSON.stringify(content)} readOnly />
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="title" className="text-sm font-medium">
-          Title
-        </label>
-        <input
-          id="title"
-          name="title"
-          defaultValue={article?.title}
-          required
-          className="rounded-md border border-neutral-300 px-3 py-2 text-lg font-semibold dark:border-neutral-700 dark:bg-transparent"
-        />
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="slug" className="text-sm font-medium">
-          Slug (optional)
-        </label>
-        <input
-          id="slug"
-          name="slug"
-          defaultValue={article?.slug}
-          placeholder="auto from title"
-          className="rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-transparent"
-        />
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="excerpt" className="text-sm font-medium">
-          Excerpt
-        </label>
-        <textarea
-          id="excerpt"
-          name="excerpt"
-          defaultValue={article?.excerpt ?? ''}
-          rows={2}
-          maxLength={500}
-          className="rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-transparent"
-        />
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium">Content</span>
-        <RichTextEditor content={content} onChange={setContent} />
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="flex min-w-0 flex-col gap-6">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="categoryId" className="text-sm font-medium">
-            Category
-          </label>
-          <select
-            id="categoryId"
-            name="categoryId"
-            defaultValue={article?.categoryId}
-            required
-            className="rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-transparent"
-          >
-            <option value="" disabled>
-              Choose a category
-            </option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="authorId" className="text-sm font-medium">
-            Author
-          </label>
-          <select
-            id="authorId"
-            name="authorId"
-            defaultValue={article?.authorId}
-            required
-            className="rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-transparent"
-          >
-            <option value="" disabled>
-              Choose an author
-            </option>
-            {authors.map((author) => (
-              <option key={author.id} value={author.id}>
-                {author.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium">Tags</span>
-        <div className="flex flex-wrap gap-3">
-          {tags.map((tag) => (
-            <label key={tag.id} className="flex items-center gap-1.5 text-sm">
-              <input
-                type="checkbox"
-                name="tagIds"
-                value={tag.id}
-                defaultChecked={article?.tagIds.includes(tag.id)}
-              />
-              {tag.name}
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium">Featured image</span>
-        <input type="hidden" name="featuredImageId" value={featuredImageId} />
-        <FeaturedImagePicker media={media} value={featuredImageId} onChange={setFeaturedImageId} />
-      </div>
-
-      <fieldset className="flex flex-col gap-2 rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
-        <legend className="px-1 text-sm font-medium">SEO</legend>
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="seoTitle" className="text-xs text-neutral-500">
-            SEO title
+          <label htmlFor="title" className={LABEL}>
+            Title
           </label>
           <input
-            id="seoTitle"
-            name="seoTitle"
-            defaultValue={article?.seoTitle ?? ''}
-            maxLength={70}
-            className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm dark:border-neutral-700 dark:bg-transparent"
+            id="title"
+            name="title"
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+            required
+            className={`${FIELD} font-serif text-xl font-semibold`}
           />
         </div>
+
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="seoDescription" className="text-xs text-neutral-500">
-            Meta description
+          <label htmlFor="slug" className={LABEL}>
+            Slug <span className="text-muted font-normal">(optional)</span>
+          </label>
+          <input
+            id="slug"
+            name="slug"
+            value={slug}
+            onChange={(event) => setSlug(event.target.value)}
+            placeholder="auto from title"
+            className={FIELD}
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="excerpt" className={LABEL}>
+            Excerpt
           </label>
           <textarea
-            id="seoDescription"
-            name="seoDescription"
-            defaultValue={article?.seoDescription ?? ''}
-            maxLength={200}
+            id="excerpt"
+            name="excerpt"
+            value={excerpt}
+            onChange={(event) => setExcerpt(event.target.value)}
             rows={2}
-            className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm dark:border-neutral-700 dark:bg-transparent"
+            maxLength={500}
+            className={FIELD}
           />
         </div>
-      </fieldset>
 
-      <fieldset className="flex flex-col gap-3 rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
-        <legend className="px-1 text-sm font-medium">Publishing</legend>
-        <div className="flex flex-wrap gap-4 text-sm">
-          <label className="flex items-center gap-1.5">
-            <input
-              type="radio"
-              name="publishMode"
-              value="draft"
-              checked={publishMode === 'draft'}
-              onChange={() => setPublishMode('draft')}
-            />
-            Save as draft
-          </label>
-          <label className="flex items-center gap-1.5">
-            <input
-              type="radio"
-              name="publishMode"
-              value="now"
-              checked={publishMode === 'now'}
-              disabled={!canPublish}
-              onChange={() => setPublishMode('now')}
-            />
-            Publish now
-          </label>
-          <label className="flex items-center gap-1.5">
-            <input
-              type="radio"
-              name="publishMode"
-              value="schedule"
-              checked={publishMode === 'schedule'}
-              disabled={!canPublish}
-              onChange={() => setPublishMode('schedule')}
-            />
-            Schedule
-          </label>
+        <div className="flex flex-col gap-1.5">
+          <span className={LABEL}>Content</span>
+          <RichTextEditor content={content} onChange={setContent} />
         </div>
-        {!canPublish && (
-          <p className="text-xs text-neutral-500">
-            Only editors and admins can publish or schedule articles.
-          </p>
-        )}
-        {publishMode === 'schedule' && (
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="scheduledFor" className="text-xs text-neutral-500">
-              Publish at (GMT — matches Ghana time)
+
+        {state.error && <p className="text-error text-sm">{state.error}</p>}
+      </div>
+
+      <div className="flex flex-col gap-6 lg:sticky lg:top-24">
+        <div className={PANEL}>
+          <p className={PANEL_TITLE}>Publishing</p>
+          <div className="flex flex-col gap-2 text-sm">
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="publishMode"
+                value="draft"
+                checked={publishMode === 'draft'}
+                onChange={() => setPublishMode('draft')}
+                className="accent-blue"
+              />
+              Save as draft
             </label>
-            <input
-              id="scheduledFor"
-              name="scheduledFor"
-              type="datetime-local"
-              defaultValue={toDatetimeLocal(article?.scheduledFor ?? null)}
-              className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm dark:border-neutral-700 dark:bg-transparent"
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="publishMode"
+                value="now"
+                checked={publishMode === 'now'}
+                disabled={!canPublish}
+                onChange={() => setPublishMode('now')}
+                className="accent-blue"
+              />
+              Publish now
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="publishMode"
+                value="schedule"
+                checked={publishMode === 'schedule'}
+                disabled={!canPublish}
+                onChange={() => setPublishMode('schedule')}
+                className="accent-blue"
+              />
+              Schedule
+            </label>
+          </div>
+          {!canPublish && (
+            <p className="text-muted mt-2 text-xs">
+              Only editors and admins can publish or schedule articles.
+            </p>
+          )}
+          {publishMode === 'schedule' && (
+            <div className="mt-3 flex flex-col gap-1.5">
+              <label htmlFor="scheduledFor" className="text-muted text-xs font-medium">
+                Publish at (GMT — matches Ghana time)
+              </label>
+              <input
+                id="scheduledFor"
+                name="scheduledFor"
+                type="datetime-local"
+                defaultValue={toDatetimeLocal(article?.scheduledFor ?? null)}
+                className={FIELD}
+              />
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={isPending}
+            className="bg-navy hover:bg-blue-dark mt-4 w-full rounded-sm px-4 py-2.5 text-sm font-bold text-white transition-colors disabled:opacity-60"
+          >
+            {isPending ? 'Saving…' : article ? 'Save changes' : 'Create article'}
+          </button>
+        </div>
+
+        <div className={PANEL}>
+          <p className={PANEL_TITLE}>Featured image</p>
+          <input type="hidden" name="featuredImageId" value={featuredImageId} />
+          <FeaturedImagePicker
+            media={media}
+            value={featuredImageId}
+            onChange={setFeaturedImageId}
+          />
+        </div>
+
+        <div className={PANEL}>
+          <p className={PANEL_TITLE}>Category &amp; author</p>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="categoryId" className={LABEL}>
+                Category
+              </label>
+              <select
+                id="categoryId"
+                name="categoryId"
+                defaultValue={article?.categoryId}
+                required
+                className={FIELD}
+              >
+                <option value="" disabled>
+                  Choose a category
+                </option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="authorId" className={LABEL}>
+                Author
+              </label>
+              <select
+                id="authorId"
+                name="authorId"
+                defaultValue={article?.authorId}
+                required
+                className={FIELD}
+              >
+                <option value="" disabled>
+                  Choose an author
+                </option>
+                {authors.map((author) => (
+                  <option key={author.id} value={author.id}>
+                    {author.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className={PANEL}>
+          <p className={PANEL_TITLE}>Tags</p>
+          <TagPicker tags={tags} defaultSelectedIds={article?.tagIds} />
+        </div>
+
+        <div className={PANEL}>
+          <p className={PANEL_TITLE}>SEO</p>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="seoTitle" className="text-muted text-xs font-medium">
+                SEO title
+              </label>
+              <input
+                id="seoTitle"
+                name="seoTitle"
+                value={seoTitle}
+                onChange={(event) => setSeoTitle(event.target.value)}
+                maxLength={70}
+                className={FIELD}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="seoDescription" className="text-muted text-xs font-medium">
+                Meta description
+              </label>
+              <textarea
+                id="seoDescription"
+                name="seoDescription"
+                value={seoDescription}
+                onChange={(event) => setSeoDescription(event.target.value)}
+                maxLength={200}
+                rows={2}
+                className={FIELD}
+              />
+            </div>
+          </div>
+          <div className="border-line mt-4 border-t pt-4">
+            <SeoPreview
+              title={seoTitle || title}
+              description={seoDescription || excerpt}
+              slug={slug}
+              imageUrl={featuredImageUrl}
             />
           </div>
-        )}
-      </fieldset>
-
-      {state.error && <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>}
-
-      <div>
-        <button
-          type="submit"
-          disabled={isPending}
-          className="bg-foreground text-background rounded-md px-5 py-2 text-sm font-medium disabled:opacity-60"
-        >
-          {isPending ? 'Saving…' : article ? 'Save changes' : 'Create article'}
-        </button>
+        </div>
       </div>
     </form>
   )

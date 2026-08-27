@@ -22,7 +22,7 @@ export function FeaturedImagePicker({ media, value, onChange }: FeaturedImagePic
           type="button"
           onClick={() => onChange('')}
           data-selected={value === ''}
-          className="flex h-16 w-16 items-center justify-center rounded-md border border-neutral-300 text-xs text-neutral-400 data-[selected=true]:border-2 data-[selected=true]:border-neutral-900 dark:border-neutral-700 dark:data-[selected=true]:border-white"
+          className="border-line text-muted data-[selected=true]:border-blue flex h-16 w-16 items-center justify-center rounded-sm border text-xs data-[selected=true]:border-2"
         >
           None
         </button>
@@ -32,7 +32,7 @@ export function FeaturedImagePicker({ media, value, onChange }: FeaturedImagePic
             type="button"
             onClick={() => onChange(item.id)}
             data-selected={value === item.id}
-            className="relative h-16 w-16 overflow-hidden rounded-md border border-neutral-300 data-[selected=true]:border-2 data-[selected=true]:border-neutral-900 dark:border-neutral-700 dark:data-[selected=true]:border-white"
+            className="border-line data-[selected=true]:border-blue relative h-16 w-16 overflow-hidden rounded-sm border data-[selected=true]:border-2"
           >
             <Image
               src={item.url}
@@ -45,7 +45,7 @@ export function FeaturedImagePicker({ media, value, onChange }: FeaturedImagePic
         ))}
       </div>
       {media.length === 0 && (
-        <p className="text-xs text-neutral-500">Upload images in the Media Library first.</p>
+        <p className="text-muted text-xs">Upload images in the Media Library first.</p>
       )}
     </div>
   )

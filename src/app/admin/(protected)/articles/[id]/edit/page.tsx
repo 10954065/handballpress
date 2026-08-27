@@ -28,8 +28,11 @@ export default async function EditArticlePage({ params }: PageProps<'/admin/arti
   if (!article) notFound()
 
   return (
-    <div className="flex max-w-3xl flex-col gap-6">
-      <h1 className="text-2xl font-bold tracking-tight">Edit Article</h1>
+    <div className="flex max-w-6xl flex-col gap-6">
+      <div>
+        <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">Content</p>
+        <h1 className="text-ink mt-1 font-serif text-3xl font-semibold">Edit Article</h1>
+      </div>
       <ArticleForm
         categories={categories}
         authors={authors}

@@ -23,8 +23,11 @@ export default async function NewArticlePage() {
   ])
 
   return (
-    <div className="flex max-w-3xl flex-col gap-6">
-      <h1 className="text-2xl font-bold tracking-tight">New Article</h1>
+    <div className="flex max-w-6xl flex-col gap-6">
+      <div>
+        <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">Content</p>
+        <h1 className="text-ink mt-1 font-serif text-3xl font-semibold">New Article</h1>
+      </div>
       <ArticleForm
         categories={categories}
         authors={authors}
