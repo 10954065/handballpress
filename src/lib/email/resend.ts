@@ -14,6 +14,7 @@ export interface SendEmailInput {
   to: string
   subject: string
   html: string
+  headers?: Record<string, string>
 }
 
 export interface SendEmailResult {
@@ -40,6 +41,7 @@ export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult>
     to: input.to,
     subject: input.subject,
     html: input.html,
+    headers: input.headers,
   })
 
   if (result.error) {

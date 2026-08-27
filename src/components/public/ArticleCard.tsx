@@ -36,20 +36,33 @@ function CardImage({
   if (!article.featuredImage) {
     return (
       <div
+        role="img"
+        aria-label={article.title}
         className={`bg-ink/[0.06] flex items-center justify-center ${className}`}
-        aria-hidden="true"
       >
-        <span className="font-serif text-3xl font-semibold opacity-20">HP</span>
+        <span className="font-serif text-3xl font-semibold opacity-20" aria-hidden="true">
+          HP
+        </span>
       </div>
     )
   }
   return (
     <Image
       src={article.featuredImage.url}
-      alt={article.featuredImage.altText ?? ''}
+      // The image is the link's only content in every variant below (no
+      // adjacent visible text) — an empty alt would leave the link with no
+      // accessible name at all for screen readers. Falling back to the
+      // article title keeps every thumbnail link nameable even for the
+      // migrated posts that came through without dedicated alt text.
+      alt={article.featuredImage.altText || article.title}
       width={article.featuredImage.width ?? 1200}
       height={article.featuredImage.height ?? 800}
       priority={priority}
+      // next/image doesn't derive this from `priority` — it's a separate
+      // prop (see next/dist/shared/lib/get-img-props.js) that must be set
+      // explicitly to get the browser to actually fetch the LCP image
+      // ahead of same-priority resources.
+      fetchPriority={priority ? 'high' : undefined}
       sizes={sizes}
       className={`object-cover ${className}`}
     />
@@ -125,11 +138,14 @@ export function ArticleCard({ article, variant = 'secondary', priority }: Articl
             className="aspect-4/3 w-full transition duration-500 group-hover:scale-[1.03]"
           />
         </Link>
-        <h4 className="font-serif mt-2 text-sm leading-snug font-semibold sm:text-base">
+        {/* h3, not h4: this variant's only caller (homepage category rails)
+            nests it directly under a SectionHeading h2 — h4 here skipped a
+            level for screen-reader heading navigation. */}
+        <h3 className="font-serif mt-2 text-sm leading-snug font-semibold sm:text-base">
           <Link href={href} className="hover:text-crimson-dark transition-colors">
             {article.title}
           </Link>
-        </h4>
+        </h3>
       </article>
     )
   }

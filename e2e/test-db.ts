@@ -49,6 +49,36 @@ export function deleteTestArticlesByPrefix(prefix: string): Promise<void> {
   })
 }
 
+// Matches ARGON2_OPTIONS in src/lib/auth/password.ts — that module is
+// 'server-only', so it can't be imported here (see this file's header
+// comment); hashing directly with the same params keeps a real login
+// (Argon2 verify) exercised end-to-end rather than faking the session.
+const ARGON2_OPTIONS = { memoryCost: 19456, timeCost: 2, parallelism: 1 }
+
+export async function createTestUser(params: {
+  email: string
+  name: string
+  password: string
+  role: 'AUTHOR' | 'EDITOR' | 'ADMIN' | 'SUPER_ADMIN'
+}): Promise<void> {
+  const { hash } = await import('@node-rs/argon2')
+  const passwordHash = await hash(params.password, ARGON2_OPTIONS)
+  await withClient(async (client) => {
+    await client.query(
+      `INSERT INTO "User" (id, email, name, "passwordHash", role, "isActive", "createdAt", "updatedAt")
+       VALUES (gen_random_uuid()::text, $1, $2, $3, $4::"UserRole", true, now(), now())
+       ON CONFLICT (email) DO UPDATE SET "passwordHash" = EXCLUDED."passwordHash", role = EXCLUDED.role`,
+      [params.email, params.name, passwordHash, params.role]
+    )
+  })
+}
+
+export function deleteTestUserByEmail(email: string): Promise<void> {
+  return withClient(async (client) => {
+    await client.query('DELETE FROM "User" WHERE email = $1', [email])
+  })
+}
+
 export async function deleteMediaByAltText(altText: string): Promise<void> {
   const { del } = await import('@vercel/blob')
   await withClient(async (client) => {

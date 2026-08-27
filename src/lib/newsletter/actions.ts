@@ -6,6 +6,11 @@ import { db } from '@/lib/db'
 import { SubscriberStatus } from '@/generated/prisma/enums'
 import { sendEmail } from '@/lib/email/resend'
 import { buildNewsletterWelcomeEmail } from '@/lib/email/templates'
+import { getClientIp } from '@/lib/http/client-ip'
+import {
+  isNewsletterSignupRateLimited,
+  recordNewsletterSignupAttempt,
+} from '@/lib/newsletter/rate-limit'
 
 export interface NewsletterActionState {
   error?: string
@@ -23,6 +28,12 @@ export async function subscribeToNewsletter(
     return { error: 'Enter a valid email address.' }
   }
   const email = parsed.data
+  const ipAddress = await getClientIp()
+
+  if (await isNewsletterSignupRateLimited(ipAddress)) {
+    return { error: 'Too many signups from this network. Try again later.' }
+  }
+  await recordNewsletterSignupAttempt(email, ipAddress)
 
   const existing = await db.newsletterSubscriber.findUnique({ where: { email } })
   if (existing?.status === SubscriberStatus.SUBSCRIBED) {
@@ -44,8 +55,8 @@ export async function subscribeToNewsletter(
   // (see sendEmail's contract) should never fail the signup itself, and
   // `after()` keeps the send from delaying the form response.
   after(async () => {
-    const { subject, html } = buildNewsletterWelcomeEmail()
-    const result = await sendEmail({ to: email, subject, html })
+    const { subject, html, headers } = buildNewsletterWelcomeEmail(email)
+    const result = await sendEmail({ to: email, subject, html, headers })
     if (!result.sent) {
       console.warn(`Newsletter welcome email not sent to ${email}: ${result.error}`)
     }

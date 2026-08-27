@@ -7,6 +7,7 @@ import { db } from '@/lib/db'
 import { hashPassword, verifyPassword } from '@/lib/auth/password'
 import { createSession, generateSessionToken, setSessionCookie } from '@/lib/auth/session'
 import { isLoginRateLimited, recordLoginFailure, recordLoginSuccess } from '@/lib/auth/rate-limit'
+import { getClientIp } from '@/lib/http/client-ip'
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -15,12 +16,6 @@ const loginSchema = z.object({
 
 export interface LoginActionState {
   error?: string
-}
-
-async function getClientIp(): Promise<string | undefined> {
-  const headerList = await headers()
-  const forwardedFor = headerList.get('x-forwarded-for')
-  return forwardedFor?.split(',')[0]?.trim() ?? headerList.get('x-real-ip') ?? undefined
 }
 
 async function getUserAgent(): Promise<string | undefined> {

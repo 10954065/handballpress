@@ -46,6 +46,12 @@ export default async function HomePage() {
 
       {secondary.length > 0 && (
         <section className="border-line grid gap-x-6 gap-y-10 border-b py-10 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Visually hidden: ArticleCard's "secondary" variant renders an
+              h3 (correct when nested under a visible SectionHeading's h2,
+              as on the article page's related-articles section) — here it
+              directly follows the hero's h1 with nothing between them,
+              which skips a level for screen-reader heading navigation. */}
+          <h2 className="sr-only">More stories</h2>
           {secondary.map((article) => (
             <ArticleCard key={article.id} article={article} variant="secondary" />
           ))}
