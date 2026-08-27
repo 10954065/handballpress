@@ -11,8 +11,9 @@ import { publishDueScheduledArticles } from '@/lib/articles/scheduling'
 import { getRelatedArticles } from '@/lib/public/queries'
 import { formatDate } from '@/lib/format'
 import { Byline } from '@/components/public/Byline'
-import { ArticleCard } from '@/components/public/ArticleCard'
-import { SectionHeading } from '@/components/public/SectionHeading'
+import { ArticleShare } from '@/components/public/ArticleShare'
+import { ArticleBody } from '@/components/public/ArticleBody'
+import { ArticleSidebar } from '@/components/public/ArticleSidebar'
 import { MatchScoreboard } from '@/components/public/MatchScoreboard'
 import { JsonLd } from '@/components/public/JsonLd'
 import { buildBreadcrumbSchema, buildNewsArticleSchema } from '@/lib/structured-data'
@@ -144,12 +145,14 @@ export default async function ArticlePage({ params }: PageProps<'/news/[slug]'>)
             {article.excerpt}
           </p>
         )}
-        <Byline
-          author={article.author}
-          publishedAt={article.publishedAt}
-          readingTimeMinutes={article.readingTimeMinutes}
-          className="mt-6"
-        />
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+          <Byline
+            author={article.author}
+            publishedAt={article.publishedAt}
+            readingTimeMinutes={article.readingTimeMinutes}
+          />
+          <ArticleShare path={`/news/${article.slug}`} title={article.title} />
+        </div>
       </header>
 
       {article.featuredImage && (
@@ -175,52 +178,46 @@ export default async function ArticlePage({ params }: PageProps<'/news/[slug]'>)
         </div>
       )}
 
-      <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        <AdSlot placement={AdPlacement.ARTICLE_TOP} className="mb-8" />
+      <div className="mx-auto max-w-6xl px-4 pt-2 sm:px-6">
+        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:gap-16">
+          <div className="mx-auto w-full max-w-3xl lg:mx-0 lg:max-w-none">
+            <AdSlot placement={AdPlacement.ARTICLE_TOP} className="mb-8" />
 
-        {article.matchReport && (
-          <MatchScoreboard
-            competition={article.matchReport.competition}
-            teamAName={article.matchReport.teamAName}
-            teamAScore={article.matchReport.teamAScore}
-            teamBName={article.matchReport.teamBName}
-            teamBScore={article.matchReport.teamBScore}
-            venue={article.matchReport.venue}
-            matchDate={article.matchReport.matchDate}
-          />
-        )}
+            {article.matchReport && (
+              <MatchScoreboard
+                competition={article.matchReport.competition}
+                teamAName={article.matchReport.teamAName}
+                teamAScore={article.matchReport.teamAScore}
+                teamBName={article.matchReport.teamBName}
+                teamBScore={article.matchReport.teamBScore}
+                venue={article.matchReport.venue}
+                matchDate={article.matchReport.matchDate}
+              />
+            )}
 
-        {/* contentHtml is sanitized at write time in articleJsonToSanitizedHtml
-            (src/lib/articles/content.ts) against an allowlist matching the
-            editor's schema exactly — never raw/unsanitized input. */}
-        <div
-          className="article-body mt-4"
-          dangerouslySetInnerHTML={{ __html: article.contentHtml }}
-        />
+            <ArticleBody html={article.contentHtml} />
 
-        <AdSlot placement={AdPlacement.ARTICLE_MIDDLE} className="mt-8" />
+            <AdSlot placement={AdPlacement.ARTICLE_MIDDLE} className="mt-8" />
 
-        {article.updatedAt && article.publishedAt && article.updatedAt > article.publishedAt && (
-          <p className="text-muted border-line mt-8 border-t pt-4 text-xs">
-            Last updated {formatDate(article.updatedAt)}
-          </p>
-        )}
-      </div>
+            {article.updatedAt &&
+              article.publishedAt &&
+              article.updatedAt > article.publishedAt && (
+                <p className="text-muted border-line mt-8 border-t pt-4 text-xs">
+                  Last updated {formatDate(article.updatedAt)}
+                </p>
+              )}
 
-      <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        <AdSlot placement={AdPlacement.ARTICLE_BOTTOM} />
-      </div>
-
-      {relatedArticles.length > 0 && (
-        <div className="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
-          <SectionHeading title="More from this section" eyebrow={article.category.name} />
-          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3">
-            {relatedArticles.map((related) => (
-              <ArticleCard key={related.id} article={related} variant="secondary" />
-            ))}
+            <AdSlot placement={AdPlacement.ARTICLE_BOTTOM} className="mt-8" />
           </div>
+
+          <aside className="mt-16 lg:mt-0">
+            <ArticleSidebar
+              relatedArticles={relatedArticles}
+              excludeIds={[article.id, ...relatedArticles.map((related) => related.id)]}
+            />
+          </aside>
         </div>
-      )}
+      </div>
     </article>
   )
 }

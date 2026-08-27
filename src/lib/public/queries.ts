@@ -50,12 +50,7 @@ export async function getHomepageFeed() {
   const shownIds = [hero?.id, ...rest.map((a) => a.id)].filter((id): id is string => Boolean(id))
 
   const [trending, categories] = await Promise.all([
-    db.article.findMany({
-      where: { ...publishedWhere, id: { notIn: shownIds }, viewCount: { gt: 0 } },
-      orderBy: { viewCount: 'desc' },
-      take: 5,
-      select: articleCardSelect,
-    }),
+    getTrendingArticles(5, shownIds),
     db.category.findMany({
       orderBy: { name: 'asc' },
       select: {
@@ -75,6 +70,15 @@ export async function getHomepageFeed() {
   const categoryRails = categories.filter((category) => category.articles.length > 0)
 
   return { hero, secondary, latest, categoryRails, trending, breakingNews }
+}
+
+export async function getTrendingArticles(limit: number, excludeIds: string[] = []) {
+  return db.article.findMany({
+    where: { ...publishedWhere, id: { notIn: excludeIds }, viewCount: { gt: 0 } },
+    orderBy: { viewCount: 'desc' },
+    take: limit,
+    select: articleCardSelect,
+  })
 }
 
 export async function getActiveBreakingNews() {

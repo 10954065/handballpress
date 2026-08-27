@@ -98,6 +98,48 @@ export function WhatsappIcon({ className }: IconProps) {
   )
 }
 
+export function TelegramIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M21.5 3.5 2.7 11c-1 .4-1 1.5.1 1.8l4.6 1.4 1.8 5.6c.2.7 1.1.9 1.6.3l2.5-2.7 4.7 3.5c.7.5 1.7.1 1.9-.7l2.9-14.2c.2-1-.7-1.7-1.3-1.5ZM8.7 13.6l9-5.6c.3-.2.6.2.3.4l-7.3 6.6-.3 3.1-1.4-3.5Z" />
+    </svg>
+  )
+}
+
+export function LinkIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      className={className}
+      aria-hidden="true"
+    >
+      <path
+        d="M9.5 14.5 14.5 9.5M8 17l-1.5 1.5a3.5 3.5 0 0 1-5-5L3 12M16 7l1.5-1.5a3.5 3.5 0 0 1 5 5L21 12"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export function CheckIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="m5 12.5 4.5 4.5L19 7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export function TiktokIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">

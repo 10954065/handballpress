@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { ArticleCard as ArticleCardData } from '@/lib/public/queries'
 import { formatDate } from '@/lib/format'
+import { ChevronRightIcon } from './icons'
 
 type Variant = 'hero' | 'secondary' | 'compact' | 'rail'
 
@@ -104,6 +105,13 @@ export function ArticleCard({ article, variant = 'secondary', priority }: Articl
               </>
             )}
           </p>
+          <Link
+            href={href}
+            className="text-navy hover:text-blue group/link mt-5 inline-flex items-center gap-1.5 text-sm font-bold tracking-wide uppercase"
+          >
+            Read the full story
+            <ChevronRightIcon className="size-4 transition-transform group-hover/link:translate-x-1" />
+          </Link>
         </div>
       </article>
     )

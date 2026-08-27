@@ -16,6 +16,8 @@ const SCRIPT_SRC =
     ? "script-src 'self' 'unsafe-inline'"
     : "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
 
+const IS_PRODUCTION = process.env.NODE_ENV === 'production'
+
 const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
   SCRIPT_SRC,
@@ -28,12 +30,21 @@ const CONTENT_SECURITY_POLICY = [
   "base-uri 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
-  'upgrade-insecure-requests',
+  // Forces every subresource/navigation to HTTPS — correct in production,
+  // but `next dev` serves plain HTTP. WebKit (unlike Chromium's dev-mode
+  // networking stack) actually honors this on localhost and force-upgrades
+  // the next navigation to https://localhost, which then hangs since there
+  // is no TLS listener there — breaks Safari/WebKit E2E runs against dev.
+  ...(IS_PRODUCTION ? ['upgrade-insecure-requests'] : []),
 ].join('; ')
 
 const SECURITY_HEADERS = [
   { key: 'Content-Security-Policy', value: CONTENT_SECURITY_POLICY },
-  { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
+  // Same HTTPS-only concern as upgrade-insecure-requests above — only ever
+  // meaningful (and safe to send) once the site is actually served over TLS.
+  ...(IS_PRODUCTION
+    ? [{ key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' }]
+    : []),
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
