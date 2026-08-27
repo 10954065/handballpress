@@ -120,6 +120,14 @@ export async function getNavCategories() {
   })
 }
 
+export async function getFilterableAuthors() {
+  return db.authorProfile.findMany({
+    where: { articles: { some: publishedWhere } },
+    orderBy: { name: 'asc' },
+    select: { name: true, slug: true },
+  })
+}
+
 interface PagedArticles {
   articles: ArticleCard[]
   totalPages: number
@@ -182,10 +190,21 @@ export async function getArticlesForAuthor(authorId: string, page: number) {
   return pagedArticleQuery({ ...publishedWhere, authorId }, page)
 }
 
-export async function searchArticles(query: string, page: number) {
+interface SearchFilters {
+  categoryId?: string
+  authorId?: string
+}
+
+export async function searchArticles(
+  query: string,
+  page: number,
+  filters: SearchFilters = {}
+) {
   return pagedArticleQuery(
     {
       ...publishedWhere,
+      ...(filters.categoryId ? { categoryId: filters.categoryId } : {}),
+      ...(filters.authorId ? { authorId: filters.authorId } : {}),
       OR: [
         { title: { contains: query, mode: 'insensitive' } },
         { excerpt: { contains: query, mode: 'insensitive' } },
