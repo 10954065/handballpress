@@ -10,6 +10,7 @@ import {
   publishArticleNow,
   revertArticleToDraft,
 } from '@/lib/articles/actions'
+import { StatusBadge } from './StatusBadge'
 
 interface ArticleRowProps {
   article: {
@@ -24,6 +25,8 @@ interface ArticleRowProps {
   }
   canPublish: boolean
 }
+
+const ACTION_BUTTON = 'text-ink-soft hover:text-blue text-xs font-semibold disabled:opacity-50'
 
 export function ArticleRow({ article, canPublish }: ArticleRowProps) {
   const router = useRouter()
@@ -42,80 +45,94 @@ export function ArticleRow({ article, canPublish }: ArticleRowProps) {
   }
 
   return (
-    <tr className="border-b border-neutral-100 align-top dark:border-neutral-900">
-      <td className="py-2 pr-4">
-        <p className="font-medium">{article.title}</p>
-        <p className="text-xs text-neutral-500">/{article.slug}</p>
-        {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
-      </td>
-      <td className="py-2 pr-4 text-neutral-500">{article.categoryName}</td>
-      <td className="py-2 pr-4 text-neutral-500">{article.authorName}</td>
-      <td className="py-2 pr-4">
-        <span className="rounded-full border border-neutral-300 px-2 py-0.5 text-xs dark:border-neutral-700">
-          {article.status}
-          {article.status === 'SCHEDULED' && article.scheduledFor
-            ? ` · ${new Date(article.scheduledFor).toLocaleString()}`
-            : ''}
-        </span>
-      </td>
-      <td className="py-2 pr-4 text-neutral-500">
-        {new Date(article.updatedAt).toLocaleDateString()}
-      </td>
-      <td className="space-x-2 py-2 text-right text-xs whitespace-nowrap">
-        <Link href={`/admin/articles/${article.id}/edit`} className="underline underline-offset-2">
-          Edit
+    <tr className="border-line border-b align-top last:border-0">
+      <td className="px-4 py-3">
+        <Link
+          href={`/admin/articles/${article.id}/edit`}
+          className="hover:text-blue font-medium transition-colors"
+        >
+          {article.title}
         </Link>
-        {article.status === 'PUBLISHED' && (
-          <Link
-            href={`/news/${article.slug}`}
-            target="_blank"
-            className="underline underline-offset-2"
-          >
-            View
+        <p className="text-muted mt-0.5 text-xs">/{article.slug}</p>
+        {error && <p className="text-error mt-1 text-xs">{error}</p>}
+      </td>
+      <td className="text-ink-soft px-4 py-3">{article.categoryName}</td>
+      <td className="text-ink-soft px-4 py-3">{article.authorName}</td>
+      <td className="px-4 py-3">
+        <StatusBadge status={article.status} scheduledFor={article.scheduledFor} />
+      </td>
+      <td className="text-muted px-4 py-3">{new Date(article.updatedAt).toLocaleDateString()}</td>
+      <td className="px-4 py-3 text-right whitespace-nowrap">
+        <div className="flex items-center justify-end gap-3">
+          <Link href={`/admin/articles/${article.id}/edit`} className={ACTION_BUTTON}>
+            Edit
           </Link>
-        )}
-        {canPublish && article.status !== 'PUBLISHED' && article.status !== 'ARCHIVED' && (
-          <button disabled={isPending} onClick={() => run(() => publishArticleNow(article.id))}>
-            Publish
+          {article.status === 'PUBLISHED' && (
+            <Link href={`/news/${article.slug}`} target="_blank" className={ACTION_BUTTON}>
+              View
+            </Link>
+          )}
+          {canPublish && article.status !== 'PUBLISHED' && article.status !== 'ARCHIVED' && (
+            <button
+              type="button"
+              disabled={isPending}
+              onClick={() => run(() => publishArticleNow(article.id))}
+              className={ACTION_BUTTON}
+            >
+              Publish
+            </button>
+          )}
+          {canPublish && article.status === 'PUBLISHED' && (
+            <button
+              type="button"
+              disabled={isPending}
+              onClick={() => run(() => revertArticleToDraft(article.id))}
+              className={ACTION_BUTTON}
+            >
+              Unpublish
+            </button>
+          )}
+          {canPublish && article.status !== 'ARCHIVED' && (
+            <button
+              type="button"
+              disabled={isPending}
+              onClick={() => run(() => archiveArticle(article.id))}
+              className={ACTION_BUTTON}
+            >
+              Archive
+            </button>
+          )}
+          <button
+            type="button"
+            disabled={isPending}
+            onClick={() => {
+              setError(null)
+              startTransition(async () => {
+                try {
+                  const { id } = await duplicateArticle(article.id)
+                  router.push(`/admin/articles/${id}/edit`)
+                } catch (actionError) {
+                  setError(actionError instanceof Error ? actionError.message : 'Duplicate failed.')
+                }
+              })
+            }}
+            className={ACTION_BUTTON}
+          >
+            Duplicate
           </button>
-        )}
-        {canPublish && article.status === 'PUBLISHED' && (
-          <button disabled={isPending} onClick={() => run(() => revertArticleToDraft(article.id))}>
-            Unpublish
-          </button>
-        )}
-        {canPublish && article.status !== 'ARCHIVED' && (
-          <button disabled={isPending} onClick={() => run(() => archiveArticle(article.id))}>
-            Archive
-          </button>
-        )}
-        <button
-          disabled={isPending}
-          onClick={() => {
-            setError(null)
-            startTransition(async () => {
-              try {
-                const { id } = await duplicateArticle(article.id)
-                router.push(`/admin/articles/${id}/edit`)
-              } catch (actionError) {
-                setError(actionError instanceof Error ? actionError.message : 'Duplicate failed.')
+          <button
+            type="button"
+            disabled={isPending}
+            onClick={() => {
+              if (window.confirm(`Delete "${article.title}"? This cannot be undone.`)) {
+                run(() => deleteArticle(article.id))
               }
-            })
-          }}
-        >
-          Duplicate
-        </button>
-        <button
-          disabled={isPending}
-          onClick={() => {
-            if (window.confirm(`Delete "${article.title}"? This cannot be undone.`)) {
-              run(() => deleteArticle(article.id))
-            }
-          }}
-          className="text-red-600 dark:text-red-400"
-        >
-          Delete
-        </button>
+            }}
+            className="text-error text-xs font-semibold hover:underline disabled:opacity-50"
+          >
+            Delete
+          </button>
+        </div>
       </td>
     </tr>
   )

@@ -30,27 +30,30 @@ export default async function ArticlesPage({ searchParams }: PageProps<'/admin/a
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Articles</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <p className="text-gold-dark text-xs font-bold tracking-[0.16em] uppercase">Content</p>
+          <h1 className="text-ink mt-1 font-serif text-3xl font-semibold">Articles</h1>
+        </div>
         <Link
           href="/admin/articles/new"
-          className="bg-foreground text-background rounded-md px-4 py-2 text-sm font-medium"
+          className="bg-navy hover:bg-blue-dark rounded-sm px-5 py-2.5 text-sm font-bold text-white transition-colors"
         >
           New Article
         </Link>
       </div>
 
-      <div className="flex gap-2 text-sm">
+      <div className="flex flex-wrap gap-2 text-sm">
         {STATUS_FILTERS.map((filterValue) => (
           <Link
             key={filterValue}
             href={
               filterValue === 'ALL' ? '/admin/articles' : `/admin/articles?status=${filterValue}`
             }
-            className={`rounded-full border px-3 py-1 ${
+            className={`rounded-full border px-3 py-1 text-xs font-bold tracking-wide uppercase transition-colors ${
               (status ?? 'ALL') === filterValue
-                ? 'border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900'
-                : 'border-neutral-300 dark:border-neutral-700'
+                ? 'bg-navy border-navy text-white'
+                : 'border-line text-ink-soft hover:border-blue hover:text-blue'
             }`}
           >
             {filterValue}
@@ -58,37 +61,44 @@ export default async function ArticlesPage({ searchParams }: PageProps<'/admin/a
         ))}
       </div>
 
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="border-b border-neutral-200 text-left text-xs text-neutral-500 uppercase dark:border-neutral-800">
-            <th className="pb-2 font-medium">Article</th>
-            <th className="pb-2 font-medium">Category</th>
-            <th className="pb-2 font-medium">Author</th>
-            <th className="pb-2 font-medium">Status</th>
-            <th className="pb-2 font-medium">Updated</th>
-            <th className="pb-2 font-medium" />
-          </tr>
-        </thead>
-        <tbody>
-          {articles.map((article) => (
-            <ArticleRow
-              key={article.id}
-              canPublish={hasRole(user.role, UserRole.EDITOR)}
-              article={{
-                id: article.id,
-                title: article.title,
-                slug: article.slug,
-                status: article.status,
-                categoryName: article.category.name,
-                authorName: article.author.name,
-                updatedAt: article.updatedAt.toISOString(),
-                scheduledFor: article.scheduledFor?.toISOString() ?? null,
-              }}
-            />
-          ))}
-        </tbody>
-      </table>
-      {articles.length === 0 && <p className="text-sm text-neutral-500">No articles yet.</p>}
+      {articles.length === 0 ? (
+        <p className="border-line text-muted rounded-sm border border-dashed px-6 py-12 text-center text-sm">
+          No articles yet.
+        </p>
+      ) : (
+        <div className="border-line bg-paper-raised overflow-x-auto rounded-sm border">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-line text-muted border-b text-left text-xs uppercase">
+                <th className="px-4 py-3 font-semibold">Article</th>
+                <th className="px-4 py-3 font-semibold">Category</th>
+                <th className="px-4 py-3 font-semibold">Author</th>
+                <th className="px-4 py-3 font-semibold">Status</th>
+                <th className="px-4 py-3 font-semibold">Updated</th>
+                <th className="px-4 py-3 font-semibold" />
+              </tr>
+            </thead>
+            <tbody>
+              {articles.map((article) => (
+                <ArticleRow
+                  key={article.id}
+                  canPublish={hasRole(user.role, UserRole.EDITOR)}
+                  article={{
+                    id: article.id,
+                    title: article.title,
+                    slug: article.slug,
+                    status: article.status,
+                    categoryName: article.category.name,
+                    authorName: article.author.name,
+                    updatedAt: article.updatedAt.toISOString(),
+                    scheduledFor: article.scheduledFor?.toISOString() ?? null,
+                  }}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }

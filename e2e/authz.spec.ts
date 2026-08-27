@@ -74,6 +74,13 @@ test.describe('article authorization boundaries', () => {
     await expect(row).toBeVisible()
     const editHref = await row.getByRole('link', { name: 'Edit' }).getAttribute('href')
 
+    // On narrow viewports the sidebar (and its Sign out button) lives behind
+    // a hamburger drawer — open it first. On wide viewports this toggle is
+    // `lg:hidden` and never renders, so Sign out is already reachable.
+    const mobileNavToggle = page.getByRole('button', { name: 'Toggle admin navigation' })
+    if (await mobileNavToggle.isVisible()) {
+      await mobileNavToggle.click()
+    }
     await page.getByRole('button', { name: 'Sign out' }).click()
     await login(page, AUTHOR_B_EMAIL, TEST_PASSWORD)
 
