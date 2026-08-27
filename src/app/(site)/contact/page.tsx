@@ -3,7 +3,7 @@ import { getActiveSocialLinks } from '@/lib/public/queries'
 import { SocialLinks } from '@/components/public/SocialLinks'
 import { CONTACT_EMAIL } from '@/lib/site-config'
 
-export const metadata: Metadata = { title: 'Contact' }
+export const metadata: Metadata = { title: 'Contact', alternates: { canonical: '/contact' } }
 
 // See (site)/page.tsx for why — same reasoning as the About page.
 export const revalidate = 60

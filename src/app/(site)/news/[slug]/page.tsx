@@ -12,6 +12,8 @@ import { Byline } from '@/components/public/Byline'
 import { ArticleCard } from '@/components/public/ArticleCard'
 import { SectionHeading } from '@/components/public/SectionHeading'
 import { MatchScoreboard } from '@/components/public/MatchScoreboard'
+import { JsonLd } from '@/components/public/JsonLd'
+import { buildBreadcrumbSchema, buildNewsArticleSchema } from '@/lib/structured-data'
 import './article-body.css'
 
 const articleInclude = {
@@ -23,11 +25,44 @@ const articleInclude = {
 
 export async function generateMetadata({ params }: PageProps<'/news/[slug]'>): Promise<Metadata> {
   const { slug } = await params
-  const article = await db.article.findUnique({ where: { slug } })
+  const article = await db.article.findUnique({
+    where: { slug },
+    select: {
+      title: true,
+      excerpt: true,
+      seoTitle: true,
+      seoDescription: true,
+      canonicalUrl: true,
+      publishedAt: true,
+      updatedAt: true,
+      featuredImage: { select: { url: true } },
+      ogImage: { select: { url: true } },
+    },
+  })
   if (!article) return {}
+
+  const ogImageUrl = article.ogImage?.url ?? article.featuredImage?.url
+  const title = article.seoTitle || article.title
+  const description = article.seoDescription || article.excerpt || undefined
+
   return {
-    title: article.seoTitle || article.title,
-    description: article.seoDescription || article.excerpt || undefined,
+    title,
+    description,
+    alternates: { canonical: article.canonicalUrl || `/news/${slug}` },
+    openGraph: {
+      type: 'article',
+      title,
+      description,
+      publishedTime: article.publishedAt?.toISOString(),
+      modifiedTime: article.updatedAt.toISOString(),
+      images: ogImageUrl ? [{ url: ogImageUrl }] : undefined,
+    },
+    twitter: {
+      card: ogImageUrl ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      images: ogImageUrl ? [ogImageUrl] : undefined,
+    },
   }
 }
 
@@ -61,6 +96,24 @@ export default async function ArticlePage({ params }: PageProps<'/news/[slug]'>)
 
   return (
     <article className="pb-16">
+      <JsonLd
+        data={buildNewsArticleSchema({
+          title: article.title,
+          excerpt: article.excerpt,
+          slug: article.slug,
+          publishedAt: article.publishedAt,
+          updatedAt: article.updatedAt,
+          authorName: article.author.name,
+          featuredImageUrl: article.featuredImage?.url ?? null,
+        })}
+      />
+      <JsonLd
+        data={buildBreadcrumbSchema([
+          { name: 'Home', path: '/' },
+          { name: article.category.name, path: `/category/${article.category.slug}` },
+          { name: article.title, path: `/news/${article.slug}` },
+        ])}
+      />
       <header className="mx-auto max-w-3xl px-4 pt-10 pb-6 sm:px-6">
         {article.status !== 'PUBLISHED' && (
           <p className="mb-6 rounded bg-yellow-100 px-3 py-2 text-sm text-yellow-900">

@@ -3,7 +3,9 @@ import { searchArticles } from '@/lib/public/queries'
 import { ArticleListing } from '@/components/public/ArticleListing'
 import { SearchIcon } from '@/components/public/icons'
 
-export const metadata: Metadata = { title: 'Search' }
+// Search results are thin, duplicate-prone content — keep the page itself
+// crawlable (so links out of it get followed) but out of the index.
+export const metadata: Metadata = { title: 'Search', robots: { index: false, follow: true } }
 
 export default async function SearchPage({ searchParams }: PageProps<'/search'>) {
   const { q, page } = await searchParams

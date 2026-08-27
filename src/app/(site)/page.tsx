@@ -2,10 +2,13 @@ import type { Metadata } from 'next'
 import { getHomepageFeed } from '@/lib/public/queries'
 import { ArticleCard } from '@/components/public/ArticleCard'
 import { SectionHeading } from '@/components/public/SectionHeading'
+import { JsonLd } from '@/components/public/JsonLd'
+import { buildWebsiteSchema } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
   description:
     'Play to the tune of development! Ghana handball news, match reports, interviews and features.',
+  alternates: { canonical: '/' },
 }
 
 // Without this, Next prerenders the homepage once at build time (this page
@@ -21,6 +24,7 @@ export default async function HomePage() {
   if (!hero) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-24 text-center sm:px-6">
+        <JsonLd data={buildWebsiteSchema()} />
         <h1 className="font-serif text-3xl font-semibold">Handball Press GH</h1>
         <p className="text-muted mt-3">
           The newsroom is warming up — published stories will appear here shortly.
@@ -31,6 +35,7 @@ export default async function HomePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <JsonLd data={buildWebsiteSchema()} />
       <section className="border-line border-b pb-10">
         <ArticleCard article={hero} variant="hero" priority />
       </section>

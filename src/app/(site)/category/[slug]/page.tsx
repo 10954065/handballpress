@@ -5,11 +5,17 @@ import { ArticleListing } from '@/components/public/ArticleListing'
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: PageProps<'/category/[slug]'>): Promise<Metadata> {
   const { slug } = await params
+  const { page } = await searchParams
   const category = await getCategoryBySlug(slug)
   if (!category) return {}
-  return { title: category.name, description: category.description ?? undefined }
+  return {
+    title: category.name,
+    description: category.description ?? undefined,
+    alternates: { canonical: page ? `/category/${slug}?page=${page}` : `/category/${slug}` },
+  }
 }
 
 export default async function CategoryPage({

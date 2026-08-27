@@ -204,3 +204,33 @@ export async function getArchiveMonths(): Promise<ArchiveMonth[]> {
   `
   return rows.map((row) => ({ year: row.year, month: row.month, count: Number(row.count) }))
 }
+
+export async function getLatestArticlesForFeed(limit: number) {
+  return db.article.findMany({
+    where: publishedWhere,
+    orderBy: { publishedAt: 'desc' },
+    take: limit,
+    select: {
+      title: true,
+      slug: true,
+      excerpt: true,
+      publishedAt: true,
+      category: { select: { name: true } },
+      author: { select: { name: true } },
+    },
+  })
+}
+
+export async function getSitemapEntries() {
+  const [articles, categories, tags, authors] = await Promise.all([
+    db.article.findMany({
+      where: publishedWhere,
+      select: { slug: true, updatedAt: true },
+      orderBy: { publishedAt: 'desc' },
+    }),
+    db.category.findMany({ select: { slug: true } }),
+    db.tag.findMany({ select: { slug: true } }),
+    db.authorProfile.findMany({ select: { slug: true } }),
+  ])
+  return { articles, categories, tags, authors }
+}

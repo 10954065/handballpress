@@ -5,11 +5,19 @@ import { getArticlesForAuthor, getAuthorBySlug } from '@/lib/public/queries'
 import { ArticleListing } from '@/components/public/ArticleListing'
 import { SocialLinks } from '@/components/public/SocialLinks'
 
-export async function generateMetadata({ params }: PageProps<'/author/[slug]'>): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: PageProps<'/author/[slug]'>): Promise<Metadata> {
   const { slug } = await params
+  const { page } = await searchParams
   const author = await getAuthorBySlug(slug)
   if (!author) return {}
-  return { title: author.name, description: author.bio ?? undefined }
+  return {
+    title: author.name,
+    description: author.bio ?? undefined,
+    alternates: { canonical: page ? `/author/${slug}?page=${page}` : `/author/${slug}` },
+  }
 }
 
 export default async function AuthorPage({ params, searchParams }: PageProps<'/author/[slug]'>) {

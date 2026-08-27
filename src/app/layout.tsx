@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Fraunces } from 'next/font/google'
+import { clientEnv } from '@/lib/env.client'
 import './globals.css'
 
 const geistSans = Geist({
@@ -19,6 +20,7 @@ const fraunces = Fraunces({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(clientEnv.NEXT_PUBLIC_SITE_URL),
   title: {
     default: 'Hand Ball Press GH',
     template: '%s | Hand Ball Press GH',
@@ -33,6 +35,18 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
     >
+      {/* A raw <link> here (rather than metadata.alternates.types) sidesteps
+          Next's metadata merging, which replaces a page's whole `alternates`
+          object rather than deep-merging it — a page-level `alternates`
+          (e.g. the homepage's canonical) would otherwise silently drop this. */}
+      <head>
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="Handball Press GH"
+          href="/feed.xml"
+        />
+      </head>
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
   )

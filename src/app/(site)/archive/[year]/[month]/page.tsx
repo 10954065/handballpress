@@ -13,11 +13,17 @@ function parseYearMonth(yearParam: string, monthParam: string) {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: PageProps<'/archive/[year]/[month]'>): Promise<Metadata> {
   const { year, month } = await params
+  const { page } = await searchParams
   const parsed = parseYearMonth(year, month)
   if (!parsed) return {}
-  return { title: formatMonthYear(parsed.year, parsed.month) }
+  const basePath = `/archive/${parsed.year}/${parsed.month}`
+  return {
+    title: formatMonthYear(parsed.year, parsed.month),
+    alternates: { canonical: page ? `${basePath}?page=${page}` : basePath },
+  }
 }
 
 export default async function ArchiveMonthPage({

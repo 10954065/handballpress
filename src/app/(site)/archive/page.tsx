@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { getArchiveMonths } from '@/lib/public/queries'
 import { formatMonthYear } from '@/lib/format'
 
-export const metadata: Metadata = { title: 'Archive' }
+export const metadata: Metadata = { title: 'Archive', alternates: { canonical: '/archive' } }
 
 // See page.tsx (homepage) for why this is needed — no dynamic API usage
 // here means Next would otherwise prerender this once at build time and

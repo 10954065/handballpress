@@ -3,11 +3,18 @@ import { notFound } from 'next/navigation'
 import { getArticlesForTag, getTagBySlug } from '@/lib/public/queries'
 import { ArticleListing } from '@/components/public/ArticleListing'
 
-export async function generateMetadata({ params }: PageProps<'/tag/[slug]'>): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: PageProps<'/tag/[slug]'>): Promise<Metadata> {
   const { slug } = await params
+  const { page } = await searchParams
   const tag = await getTagBySlug(slug)
   if (!tag) return {}
-  return { title: `#${tag.name}` }
+  return {
+    title: `#${tag.name}`,
+    alternates: { canonical: page ? `/tag/${slug}?page=${page}` : `/tag/${slug}` },
+  }
 }
 
 export default async function TagPage({ params, searchParams }: PageProps<'/tag/[slug]'>) {

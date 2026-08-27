@@ -5,6 +5,7 @@ import { SocialLinks } from '@/components/public/SocialLinks'
 export const metadata: Metadata = {
   title: 'About',
   description: 'What Handball Press GH covers, and why.',
+  alternates: { canonical: '/about' },
 }
 
 // See (site)/page.tsx for why — this page also queries the DB (social
