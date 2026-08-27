@@ -86,7 +86,7 @@ export function SiteFooter({ categories, socialLinks }: SiteFooterProps) {
           rel="noopener noreferrer"
           className="hover:text-white"
         >
-          sunleonrouterenterprise.com
+          Sunleon Router Enterprise
         </a>
       </div>
     </footer>
