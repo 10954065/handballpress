@@ -30,8 +30,8 @@ export function ArticleListing({
   return (
     <>
       <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
-        {articles.map((article) => (
-          <ArticleCard key={article.id} article={article} variant="secondary" />
+        {articles.map((article, index) => (
+          <ArticleCard key={article.id} article={article} variant="secondary" priority={index === 0} />
         ))}
       </div>
       <Pagination
