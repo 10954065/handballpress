@@ -11,7 +11,7 @@
   float: left;
   height: 0;
   pointer-events: none;
-  color: #a3a3a3;
+  color: var(--color-faint);
 }
 
 .article-editor-content h2 {
@@ -47,10 +47,10 @@
 }
 
 .article-editor-content blockquote {
-  border-left: 3px solid #d4d4d4;
+  border-left: 3px solid var(--color-line-strong);
   padding-left: 1rem;
   margin: 1rem 0;
-  color: #525252;
+  color: var(--color-ink-soft);
   font-style: italic;
 }
 
@@ -69,7 +69,7 @@
 .article-editor-content hr {
   margin: 1.5rem 0;
   border: none;
-  border-top: 1px solid #d4d4d4;
+  border-top: 1px solid var(--color-line-strong);
 }
 
 .article-editor-content table {
@@ -80,12 +80,12 @@
 
 .article-editor-content table td,
 .article-editor-content table th {
-  border: 1px solid #d4d4d4;
+  border: 1px solid var(--color-line-strong);
   padding: 0.4rem 0.6rem;
 }
 
 .article-editor-content table th {
-  background: #f5f5f5;
+  background: var(--color-paper);
   font-weight: 600;
 }
 
@@ -139,7 +139,7 @@
 
 .article-image-node figcaption input {
   font-size: 0.8rem;
-  color: #737373;
+  color: var(--color-muted);
   border: none;
   outline: none;
   background: transparent;
@@ -157,43 +157,14 @@
   text-transform: uppercase;
   letter-spacing: 0.03em;
   padding: 0.1rem 0.4rem;
-  border: 1px solid #d4d4d4;
+  border: 1px solid var(--color-line-strong);
   border-radius: 0.2rem;
   background: transparent;
+  color: var(--color-ink-soft);
 }
 
 .article-image-align-controls button[data-active='true'] {
-  background: #171717;
+  background: var(--color-navy);
   color: white;
-  border-color: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  .article-editor-content blockquote {
-    border-left-color: #404040;
-    color: #a3a3a3;
-  }
-
-  .article-editor-content hr {
-    border-top-color: #404040;
-  }
-
-  .article-editor-content table td,
-  .article-editor-content table th {
-    border-color: #404040;
-  }
-
-  .article-editor-content table th {
-    background: #262626;
-  }
-
-  .article-image-align-controls button {
-    border-color: #404040;
-  }
-
-  .article-image-align-controls button[data-active='true'] {
-    background: #f5f5f5;
-    color: #171717;
-    border-color: #f5f5f5;
-  }
+  border-color: var(--color-navy);
 }

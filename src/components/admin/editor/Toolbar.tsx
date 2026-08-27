@@ -25,7 +25,7 @@ function ToolbarButton({ onClick, isActive, disabled, label, children }: Toolbar
       aria-label={label}
       aria-pressed={isActive}
       data-active={isActive}
-      className="rounded px-2 py-1 text-sm hover:bg-neutral-100 disabled:opacity-40 data-[active=true]:bg-neutral-200 dark:hover:bg-neutral-800 dark:data-[active=true]:bg-neutral-700"
+      className="hover:bg-ink/[0.06] data-[active=true]:bg-blue-tint data-[active=true]:text-blue-dark rounded-sm px-2 py-1 text-sm disabled:opacity-40"
     >
       {children}
     </button>
@@ -87,7 +87,7 @@ export function Toolbar({ editor }: ToolbarProps) {
     <div
       role="toolbar"
       aria-label="Formatting"
-      className="flex flex-wrap items-center gap-1 border-b border-neutral-200 p-2 dark:border-neutral-800"
+      className="border-line flex flex-wrap items-center gap-1 border-b p-2"
     >
       <ToolbarButton
         label="Heading 2"

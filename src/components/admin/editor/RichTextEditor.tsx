@@ -45,7 +45,7 @@ export function RichTextEditor({ content, onChange }: RichTextEditorProps) {
   })
 
   return (
-    <div className="rounded-lg border border-neutral-200 dark:border-neutral-800">
+    <div className="border-line bg-paper-raised rounded-sm border">
       <Toolbar editor={editor} />
       <EditorContent editor={editor} />
     </div>
