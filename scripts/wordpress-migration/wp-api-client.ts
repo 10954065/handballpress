@@ -68,6 +68,10 @@ async function fetchJson<T>(url: string): Promise<T> {
 
 const PAGE_SIZE = 100
 
+export async function fetchPostBySlug(slug: string): Promise<WpPost> {
+  return fetchJson<WpPost>(siteUrl(`/posts/slug:${slug}`))
+}
+
 export async function fetchAllPublishedPosts(): Promise<WpPost[]> {
   const posts: WpPost[] = []
   let offset = 0
