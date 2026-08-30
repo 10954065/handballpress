@@ -12,13 +12,23 @@ async function main() {
   const db = new PrismaClient({ adapter })
 
   const links = [
-    { platform: SocialPlatform.X, url: 'https://x.com/HandballPressGH', order: 0 },
+    {
+      platform: SocialPlatform.FACEBOOK,
+      url: 'https://www.facebook.com/share/1LtE1qyvRW/',
+      order: 0,
+    },
+    { platform: SocialPlatform.X, url: 'https://x.com/HandballPressGH', order: 1 },
     {
       platform: SocialPlatform.INSTAGRAM,
       url: 'https://www.instagram.com/handballpressgh',
-      order: 1,
+      order: 2,
     },
-    { platform: SocialPlatform.TIKTOK, url: 'https://www.tiktok.com/@handballpressgh', order: 2 },
+    { platform: SocialPlatform.TIKTOK, url: 'https://www.tiktok.com/@handballpressgh', order: 3 },
+    {
+      platform: SocialPlatform.YOUTUBE,
+      url: 'https://youtube.com/@handballpressgh',
+      order: 4,
+    },
   ]
 
   for (const link of links) {
