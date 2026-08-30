@@ -27,33 +27,29 @@ export async function AdSlot({ placement, className }: AdSlotProps) {
     <img
       src={ad.imageUrl}
       alt={ad.name}
-      className="mx-auto h-auto max-w-full rounded-md transition-transform duration-300 group-hover:scale-[1.015]"
+      className="block h-auto w-full transition-transform duration-300 group-hover:scale-[1.015]"
     />
   ) : null
 
   if (!inner) return null
 
   return (
-    <div
-      className={`border-line bg-paper-raised shadow-card overflow-hidden rounded-md border ${className ?? ''}`}
-    >
-      <p className="text-faint border-line/60 border-b px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] uppercase">
+    <div className={`shadow-card overflow-hidden rounded-md ${className ?? ''}`}>
+      <p className="text-faint bg-paper-raised px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] uppercase">
         Advertisement
       </p>
-      <div className="p-3">
-        {ad.linkUrl ? (
-          <a
-            href={`/ads/${ad.id}/click`}
-            target="_blank"
-            rel="noopener noreferrer sponsored"
-            className="group block"
-          >
-            {inner}
-          </a>
-        ) : (
-          inner
-        )}
-      </div>
+      {ad.linkUrl ? (
+        <a
+          href={`/ads/${ad.id}/click`}
+          target="_blank"
+          rel="noopener noreferrer sponsored"
+          className="group block"
+        >
+          {inner}
+        </a>
+      ) : (
+        inner
+      )}
     </div>
   )
 }
